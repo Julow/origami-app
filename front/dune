@@ -1,0 +1,11 @@
+(executable
+ (name app)
+ (modes js)
+ (libraries brr vg vg.htmlc gg))
+
+(rule
+ (copy app.bc.js app.js))
+
+(install
+ (section share)
+ (files app.js))
