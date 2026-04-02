@@ -35,22 +35,16 @@ let image =
     let sq = P.empty |> P.rect (Box2.v_mid P2.o (Size2.v 50. 50.)) in
     I.const color |> I.cut sq
   in
-  let diags =
-    let p =
-      P.empty
-      |> P.sub (P2.v ~-.25.0 ~-.25.0)
-      |> P.line (P2.v 25.0 25.0)
-      |> P.close
-      |> P.sub (P2.v ~-.25.0 25.0)
-      |> P.line (P2.v 25.0 ~-.25.0)
-      |> P.close
-    in
-    let area = `O { P.o with P.width = 0.1 } in
-    I.cut ~area p (I.const Color.black)
-    (* (feuille Color.black) *)
+  let diag angle w =
+    (* Drawing a rectangle instead of a line with a outline because the canvas
+       backend doesn't support cutting an outline on an arbitrary image. *)
+    let rect = P.empty |> P.rect (Box2.v_mid P2.o (Size2.v 100. w)) in
+    let rect = P.tr (M3.rot2 angle) rect in
+    I.cut rect (feuille Color.black)
   in
   feuille (Color.v_srgb 0.314 0.784 0.471)
-  |> I.blend diags
+  |> I.blend (diag (Float.pi /. 4.) 0.3)
+  |> I.blend (diag ~-.(Float.pi /. 4.) 0.3)
   |> I.rot (Float.pi /. 4.)
 
 let () =
