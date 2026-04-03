@@ -15,9 +15,12 @@ let text_centered ~measure_text font color text =
   I.cut_glyphs ~text font [] (I.const color)
   |> I.move (V2.v (~-.(measure_text font text) /. 2.) 0.)
 
-let feuille color =
-  let sq = P.empty |> P.rect (Box2.v_mid P2.o (Size2.v 50. 50.)) in
-  I.const color |> I.cut sq
+(** Draw a rect centered on the given position with the given size. *)
+let rect_mid pos size color =
+  let p = P.empty |> P.rect (Box2.v_mid pos size) in
+  I.cut p (I.const color)
+
+let feuille color = rect_mid P2.o (Size2.v 50. 50.) color
 
 let diag angle w =
   (* Drawing a rectangle instead of a line with a outline because the canvas
@@ -58,12 +61,15 @@ module Moda_masu = struct
     let labels_unit = view_diag_len /. diag_len in
     let label_x ?(below = false) x txt =
       let x = x *. labels_unit in
-      text_centered ~measure_text font Color.black txt
-      |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.))
+      (text_centered ~measure_text font Color.black txt
+      |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.)))
+      ++ rect_mid (P2.v x 0.) (Size2.v 0.3 2.) Color.black
     in
     let label_y y text =
       let y = y *. labels_unit in
-      I.cut_glyphs ~text font [] (I.const Color.black) |> I.move (V2.v 2. y)
+      (I.cut_glyphs ~text font [] (I.const Color.black)
+      |> I.move (V2.v 2. (y -. (font.Font.size /. 3.))))
+      ++ rect_mid (P2.v 0. y) (Size2.v 2. 0.3) Color.black
     in
     let mm = Printf.sprintf "%.0fmm" in
     let labels_x =
@@ -84,7 +90,6 @@ module Moda_masu = struct
       ++ label_y ~-.b (mm b)
       ++ label_y ~-.c (mm c)
     in
-    ignore t.y_folds;
     (feuille (Color.v_srgb 0.314 0.784 0.471)
      ++ diag (Float.pi /. 4.) 0.3
      ++ diag ~-.(Float.pi /. 4.) 0.3
