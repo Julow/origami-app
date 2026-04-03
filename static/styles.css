@@ -4,3 +4,30 @@
   max-width: 700px;
   text-align: center;
 }
+
+.content-box
+{
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  border: 1px solid #777;
+  border-radius: 1em;
+}
+
+.inputs
+{
+  padding: 1em;
+  flex: 1;
+  width: 100%;
+}
+
+.inputs td
+{
+  width: 50%;
+}
+
+.inputs input
+{
+  width: 100%;
+  box-sizing: border-box;
+}
