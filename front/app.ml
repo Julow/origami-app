@@ -5,8 +5,10 @@ open Gg
 open Vg
 open Lwd_infix
 
+let ( ++ ) a b = I.blend b a
+
 let font =
-  { Font.name = "sans-serif"; slant = `Normal; weight = `W400; size = 3. }
+  { Font.name = "sans-serif"; slant = `Normal; weight = `W400; size = 2.5 }
 
 (** Draw text centered around [0] on the [x] axis. *)
 let text_centered ~measure_text font color text =
@@ -24,34 +26,6 @@ let diag angle w =
   let rect = P.tr (M3.rot2 angle) rect in
   I.cut rect (feuille Color.black)
 
-let make_image ~measure_text result_text =
-  let label = text_centered ~measure_text font Color.black result_text in
-  feuille (Color.v_srgb 0.314 0.784 0.471)
-  |> I.blend (diag (Float.pi /. 4.) 0.3)
-  |> I.blend (diag ~-.(Float.pi /. 4.) 0.3)
-  |> I.rot (Float.pi /. 4.)
-  |> I.blend label
-
-let canvas_feuille paper_size =
-  let el =
-    El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
-  in
-  let vgr = Vg_utils.create (Canvas.of_el el) in
-  let measure_text = Vg_utils.measure_text vgr in
-  let first_render = ref true in
-  let render_state st =
-    let img = make_image ~measure_text st in
-    (* Delay the first rendering until the canvas is inserted in the
-       document, otherwise the canvas would remain blank. *)
-    if !first_render then (
-      ignore (G.request_animation_frame (fun _ -> Vg_utils.render vgr img));
-      first_render := false)
-    else Vg_utils.render vgr img
-  in
-  let$ paper_size = paper_size in
-  render_state paper_size;
-  el
-
 let float_input var =
   let on_input ev =
     let target = Ev.target ev |> Ev.target_to_jv |> El.of_jv in
@@ -67,19 +41,100 @@ let float_input var =
     ~ev:[ `P (Elwd.handler Ev.input on_input) ]
     ()
 
-let paper_size w h d =
-  let$ w = Lwd.get w and$ h = Lwd.get h and$ d = Lwd.get d in
-  (w +. d +. (4.0 *. h)) /. Float.sqrt 2.0
+module Moda_masu = struct
+  type t = {
+    x_folds : float * float * float;
+    y_folds : float * float * float;
+    paper_size : int * int;
+  }
+
+  let image t ~measure_text =
+    let view_diag_len = Float.sqrt (50. *. 50. *. 2.) in
+    let$ t = t in
+    let diag_len =
+      let w, h = t.paper_size in
+      Float.sqrt (float (w * h * 2))
+    in
+    let labels_unit = view_diag_len /. diag_len in
+    let label_x ?(below = false) x txt =
+      let x = x *. labels_unit in
+      text_centered ~measure_text font Color.black txt
+      |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.))
+    in
+    let label_y y text =
+      let y = y *. labels_unit in
+      I.cut_glyphs ~text font [] (I.const Color.black) |> I.move (V2.v 2. y)
+    in
+    let mm = Printf.sprintf "%.0fmm" in
+    let labels_x =
+      let a, b, c = t.x_folds in
+      label_x a (mm a)
+      ++ label_x ~below:true b (mm b)
+      ++ label_x c (mm c)
+      ++ label_x ~-.a (mm a)
+      ++ label_x ~below:true ~-.b (mm b)
+      ++ label_x ~-.c (mm c)
+    in
+    let labels_y =
+      let a, b, c = t.y_folds in
+      label_y a (mm a)
+      ++ label_y b (mm b)
+      ++ label_y c (mm c)
+      ++ label_y ~-.a (mm a)
+      ++ label_y ~-.b (mm b)
+      ++ label_y ~-.c (mm c)
+    in
+    ignore t.y_folds;
+    (feuille (Color.v_srgb 0.314 0.784 0.471)
+     ++ diag (Float.pi /. 4.) 0.3
+     ++ diag ~-.(Float.pi /. 4.) 0.3
+    |> I.rot (Float.pi /. 4.))
+    ++ labels_x ++ labels_y
+
+  let compute w h d =
+    let$ w = Lwd.get w and$ h = Lwd.get h and$ d = Lwd.get d in
+    let paper_w = int_of_float ((w +. d +. (4.0 *. h)) /. Float.sqrt 2.0) in
+    let fold dim i = (dim /. 2.) +. (h *. float i) in
+    let x_folds = (fold w 0, fold w 1, fold w 2) in
+    let y_folds = (fold d 0, fold d 1, fold d 2) in
+    { x_folds; y_folds; paper_size = (paper_w, paper_w) }
+
+  let ui () =
+    let box_w = Lwd.var 100. in
+    let box_h = Lwd.var 30. in
+    let box_d = Lwd.var 50. in
+    let t = compute box_w box_h box_d in
+    let inputs =
+      [
+        ("Box width", float_input box_w);
+        ("Box height", float_input box_h);
+        ("Box depth", float_input box_d);
+        ( "Paper size",
+          let$ { paper_size = w, h; _ } = t in
+          El.txt' (Printf.sprintf "%dmm x %dmm" w h) );
+      ]
+    in
+    (inputs, image t)
+end
+
+let canvas_elwd image =
+  let el =
+    El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
+  in
+  let vgr = Vg_utils.create (Canvas.of_el el) in
+  let measure_text = Vg_utils.measure_text vgr in
+  let first_render = ref true in
+  let$ image = image ~measure_text in
+  if !first_render then (
+    (* Delay the first rendering until the canvas is inserted in the document,
+       otherwise the canvas would remain blank. *)
+    ignore (G.request_animation_frame (fun _ -> Vg_utils.render vgr image));
+    first_render := false)
+  else Vg_utils.render vgr image;
+  el
 
 let ui =
-  let box_w = Lwd.var 100. in
-  let box_h = Lwd.var 30. in
-  let box_d = Lwd.var 50. in
-  let paper_size =
-    let$ s = paper_size box_w box_h box_d in
-    Printf.sprintf "%.1f x %.1f" s s
-  in
-  let canvas_el = canvas_feuille paper_size in
+  let inputs, image = Moda_masu.ui () in
   Elwd.div
     ~at:[ `P (At.class' (Jstr.v "content")) ]
     [
@@ -89,24 +144,18 @@ let ui =
            ~at:[ `P (At.class' (Jstr.v "content-box")) ]
            [
              `R
-               (let r label elwd =
-                  `R
-                    (Elwd.tr
-                       [
-                         `P (El.td [ El.txt' label ]); `R (Elwd.td [ `R elwd ]);
-                       ])
-                in
-                Elwd.table
+               (Elwd.table
                   ~at:[ `P (At.class' (Jstr.v "inputs")) ]
-                  [
-                    r "Box width" (float_input box_w);
-                    r "Box height" (float_input box_h);
-                    r "Box depth" (float_input box_d);
-                    r "Paper size"
-                      (let$ paper_size = paper_size in
-                       El.txt' paper_size);
-                  ]);
-             `R (Elwd.div [ `R canvas_el ]);
+                  (List.map
+                     (fun (label, elwd) ->
+                       `R
+                         (Elwd.tr
+                            [
+                              `P (El.td [ El.txt' label ]);
+                              `R (Elwd.td [ `R elwd ]);
+                            ]))
+                     inputs));
+             `R (Elwd.div [ `R (canvas_elwd image) ]);
            ]);
     ]
 
