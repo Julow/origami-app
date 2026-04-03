@@ -47,6 +47,7 @@ let float_input var =
 module Moda_masu = struct
   type t = {
     x_folds : float * float * float;
+        (** Coordinate to folds as a distance from the center point. *)
     y_folds : float * float * float;
     paper_size : int * int;
   }
@@ -58,37 +59,35 @@ module Moda_masu = struct
       let w, h = t.paper_size in
       Float.sqrt (float (w * h * 2))
     in
+    (* Convert from paper coordinate to image coordinate. *)
     let labels_unit = view_diag_len /. diag_len in
-    let label_x ?(below = false) x txt =
+    let mm v = Printf.sprintf "%.0fmm" (Float.round v) in
+    let label_x ?(below = false) x =
+      (* Display a distance from an edge of the diagonal instead of a distance
+         from the center point. *)
+      let txt = mm ((diag_len /. 2.) +. x) in
       let x = x *. labels_unit in
       (text_centered ~measure_text font Color.black txt
       |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.)))
       ++ rect_mid (P2.v x 0.) (Size2.v 0.3 2.) Color.black
     in
-    let label_y y text =
+    let label_y y =
+      (* Invert the scale for aesthetic purposes. *)
+      let text = mm (diag_len -. ((diag_len /. 2.) +. y)) in
       let y = y *. labels_unit in
       (I.cut_glyphs ~text font [] (I.const Color.black)
       |> I.move (V2.v 2. (y -. (font.Font.size /. 3.))))
       ++ rect_mid (P2.v 0. y) (Size2.v 2. 0.3) Color.black
     in
-    let mm = Printf.sprintf "%.0fmm" in
     let labels_x =
       let a, b, c = t.x_folds in
-      label_x a (mm a)
-      ++ label_x ~below:true b (mm b)
-      ++ label_x c (mm c)
-      ++ label_x ~-.a (mm a)
-      ++ label_x ~below:true ~-.b (mm b)
-      ++ label_x ~-.c (mm c)
+      label_x a ++ label_x ~below:true b ++ label_x c ++ label_x ~-.a
+      ++ label_x ~below:true ~-.b ++ label_x ~-.c
     in
     let labels_y =
       let a, b, c = t.y_folds in
-      label_y a (mm a)
-      ++ label_y b (mm b)
-      ++ label_y c (mm c)
-      ++ label_y ~-.a (mm a)
-      ++ label_y ~-.b (mm b)
-      ++ label_y ~-.c (mm c)
+      label_y a ++ label_y b ++ label_y c ++ label_y ~-.a ++ label_y ~-.b
+      ++ label_y ~-.c
     in
     (feuille (Color.v_srgb 0.314 0.784 0.471)
      ++ diag (Float.pi /. 4.) 0.3
