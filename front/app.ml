@@ -5,6 +5,14 @@ open Gg
 open Vg
 open Lwd_infix
 
+let font =
+  { Font.name = "sans-serif"; slant = `Normal; weight = `W400; size = 3. }
+
+(** Draw text centered around [0] on the [x] axis. *)
+let text_centered ~measure_text font color text =
+  I.cut_glyphs ~text font [] (I.const color)
+  |> I.move (V2.v (~-.(measure_text font text) /. 2.) 0.)
+
 let feuille color =
   let sq = P.empty |> P.rect (Box2.v_mid P2.o (Size2.v 50. 50.)) in
   I.const color |> I.cut sq
@@ -16,14 +24,8 @@ let diag angle w =
   let rect = P.tr (M3.rot2 angle) rect in
   I.cut rect (feuille Color.black)
 
-let make_image result_text =
-  let font =
-    { Font.name = "sans-serif"; slant = `Normal; weight = `W400; size = 3. }
-  in
-  let label =
-    I.cut_glyphs ~text:result_text font [] (I.const Color.black)
-    |> I.move (V2.v 0. 2.)
-  in
+let make_image ~measure_text result_text =
+  let label = text_centered ~measure_text font Color.black result_text in
   feuille (Color.v_srgb 0.314 0.784 0.471)
   |> I.blend (diag (Float.pi /. 4.) 0.3)
   |> I.blend (diag ~-.(Float.pi /. 4.) 0.3)
@@ -35,9 +37,10 @@ let canvas_feuille paper_size =
     El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
   in
   let vgr = Vg_utils.create (Canvas.of_el el) in
+  let measure_text = Vg_utils.measure_text vgr in
   let first_render = ref true in
   let render_state st =
-    let img = make_image st in
+    let img = make_image ~measure_text st in
     (* Delay the first rendering until the canvas is inserted in the
        document, otherwise the canvas would remain blank. *)
     if !first_render then (
