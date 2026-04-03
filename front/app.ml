@@ -5,27 +5,6 @@ open Gg
 open Vg
 open Lwd_infix
 
-(* Setup [Vgr_htmlc] for a canvas with a size specified with its [width] and
-   [height] attributes. The viewport is centered on [0, 0] with a height of
-   [100mm] and a width depending on the canvas aspect ratio. *)
-let renderer cv =
-  let w = float (Canvas.w cv) and h = float (Canvas.h cv) in
-  let () =
-    (* [Vgr] resizes the canvas according to the device pixel density. Scale
-       back the canvas using CSS so it appears with the specified size. *)
-    let open Brr.El in
-    let el = Canvas.to_el cv in
-    set_inline_style Style.width Jstr.(of_float w + v "px") el;
-    set_inline_style Style.height Jstr.(of_float h + v "px") el
-  in
-  let aspect = w /. h in
-  let size = Size2.v (100. *. aspect) 100. in
-  let view =
-    Box2.v (P2.v (~-.50. *. aspect) ~-.50.) (Size2.v (100. *. aspect) 100.)
-  in
-  let vgr = Vgr.create (Vgr_htmlc.target ~resize:false cv) `Other in
-  fun image -> ignore (Vgr.render vgr (`Image (size, view, image)))
-
 let feuille color =
   let sq = P.empty |> P.rect (Box2.v_mid P2.o (Size2.v 50. 50.)) in
   I.const color |> I.cut sq
@@ -55,16 +34,16 @@ let canvas_feuille paper_size =
   let el =
     El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
   in
-  let render = renderer (Canvas.of_el el) in
+  let vgr = Vg_utils.create (Canvas.of_el el) in
   let first_render = ref true in
   let render_state st =
     let img = make_image st in
     (* Delay the first rendering until the canvas is inserted in the
        document, otherwise the canvas would remain blank. *)
     if !first_render then (
-      ignore (G.request_animation_frame (fun _ -> render img));
+      ignore (G.request_animation_frame (fun _ -> Vg_utils.render vgr img));
       first_render := false)
-    else render img
+    else Vg_utils.render vgr img
   in
   let$ paper_size = paper_size in
   render_state paper_size;
