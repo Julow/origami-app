@@ -67,3 +67,18 @@ let float_input var =
       ]
     ~ev:[ `P (Elwd.handler Ev.input on_input) ]
     ()
+
+let boolean_input var =
+  let on_change ev =
+    let target = Ev.target ev |> Ev.target_to_jv |> El.of_jv in
+    let checked = El.prop El.Prop.checked target in
+    Lwd.set var checked
+  in
+  Elwd.input
+    ~at:
+      [
+        `P (At.type' (Jstr.v "checkbox"));
+        `P (At.if' (Lwd.peek var) At.checked);
+      ]
+    ~ev:[ `P (Elwd.handler Ev.input on_change) ]
+    ()
