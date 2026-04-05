@@ -5,6 +5,18 @@
   text-align: center;
 }
 
+.model-select a
+{
+  cursor: pointer;
+}
+
+.model-select a + a::before
+{
+  content: " | ";
+  cursor: default;
+  color: #777;
+}
+
 .content-box
 {
   display: flex;
