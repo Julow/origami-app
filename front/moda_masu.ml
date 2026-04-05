@@ -34,9 +34,7 @@ let image t ~measure_text =
     (* Invert the scale for aesthetic purposes. *)
     let text = mm (diag_len -. ((diag_len /. 2.) +. y)) in
     let y = y *. labels_unit in
-    (I.cut_glyphs ~text font [] (I.const Color.black)
-    |> I.move (V2.v 2. (y -. (font.Font.size /. 3.))))
-    ++ rect_mid (P2.v 0. y) (Size2.v 2. 0.3) Color.black
+    label_right 0. y text
   in
   let labels_x =
     let a, b, c = t.x_folds in
@@ -48,9 +46,7 @@ let image t ~measure_text =
     label_y a ++ label_y b ++ label_y c ++ label_y ~-.a ++ label_y ~-.b
     ++ label_y ~-.c
   in
-  (feuille (Color.v_srgb 0.314 0.784 0.471)
-   ++ diag (Float.pi /. 4.) 0.3
-   ++ diag ~-.(Float.pi /. 4.) 0.3
+  (feuille () ++ diag (Float.pi /. 4.) 0.3 ++ diag ~-.(Float.pi /. 4.) 0.3
   |> I.rot (Float.pi /. 4.))
   ++ labels_x ++ labels_y
 

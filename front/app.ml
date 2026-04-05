@@ -19,7 +19,8 @@ let canvas_elwd image =
   else Vg_utils.render vgr image;
   el
 
-let models = [ ("Moda Masu", Moda_masu.ui); ("Masu", Masu.ui) ]
+let models =
+  [ ("Moda Masu", Moda_masu.ui); ("Masu", Masu.ui); ("Corolles", Corolles.ui) ]
 
 let ui =
   let model =
