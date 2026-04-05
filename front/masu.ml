@@ -10,7 +10,7 @@ let ui () =
   let inputs =
     [
       ("Box width", float_input box_w);
-      ( "Box depth",
+      ( "Box length",
         let$ w = Lwd.get box_w in
         El.txt' (Printf.sprintf "%.0fmm" w) );
       ( "Box height",

@@ -6,7 +6,7 @@ open Ui
 
 type t = {
   x_folds : float * float * float;
-  (** Coordinate to folds as a distance from the center point. *)
+      (** Coordinate to folds as a distance from the center point. *)
   y_folds : float * float * float;
   paper_size : int * int;
 }
@@ -27,7 +27,7 @@ let image t ~measure_text =
     let txt = mm ((diag_len /. 2.) +. x) in
     let x = x *. labels_unit in
     (text_centered ~measure_text font Color.black txt
-     |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.)))
+    |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.)))
     ++ rect_mid (P2.v x 0.) (Size2.v 0.3 2.) Color.black
   in
   let label_y y =
@@ -35,7 +35,7 @@ let image t ~measure_text =
     let text = mm (diag_len -. ((diag_len /. 2.) +. y)) in
     let y = y *. labels_unit in
     (I.cut_glyphs ~text font [] (I.const Color.black)
-     |> I.move (V2.v 2. (y -. (font.Font.size /. 3.))))
+    |> I.move (V2.v 2. (y -. (font.Font.size /. 3.))))
     ++ rect_mid (P2.v 0. y) (Size2.v 2. 0.3) Color.black
   in
   let labels_x =
@@ -51,27 +51,27 @@ let image t ~measure_text =
   (feuille (Color.v_srgb 0.314 0.784 0.471)
    ++ diag (Float.pi /. 4.) 0.3
    ++ diag ~-.(Float.pi /. 4.) 0.3
-   |> I.rot (Float.pi /. 4.))
+  |> I.rot (Float.pi /. 4.))
   ++ labels_x ++ labels_y
 
-let compute w h d =
-  let$ w = Lwd.get w and$ h = Lwd.get h and$ d = Lwd.get d in
-  let paper_w = int_of_float ((w +. d +. (4.0 *. h)) /. Float.sqrt 2.0) in
+let compute w h l =
+  let$ w = Lwd.get w and$ h = Lwd.get h and$ l = Lwd.get l in
+  let paper_w = int_of_float ((w +. l +. (4.0 *. h)) /. Float.sqrt 2.0) in
   let fold dim i = (dim /. 2.) +. (h *. float i) in
   let x_folds = (fold w 0, fold w 1, fold w 2) in
-  let y_folds = (fold d 0, fold d 1, fold d 2) in
+  let y_folds = (fold l 0, fold l 1, fold l 2) in
   { x_folds; y_folds; paper_size = (paper_w, paper_w) }
 
 let ui () =
   let box_w = Lwd.var 100. in
   let box_h = Lwd.var 30. in
-  let box_d = Lwd.var 50. in
-  let t = compute box_w box_h box_d in
+  let box_l = Lwd.var 50. in
+  let t = compute box_w box_h box_l in
   let inputs =
     [
       ("Box width", float_input box_w);
+      ("Box length", float_input box_l);
       ("Box height", float_input box_h);
-      ("Box depth", float_input box_d);
       ( "Paper size",
         let$ { paper_size = w, h; _ } = t in
         El.txt' (Printf.sprintf "%dmm x %dmm" w h) );
