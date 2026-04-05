@@ -77,8 +77,7 @@ let boolean_input var =
   Elwd.input
     ~at:
       [
-        `P (At.type' (Jstr.v "checkbox"));
-        `P (At.if' (Lwd.peek var) At.checked);
+        `P (At.type' (Jstr.v "checkbox")); `P (At.if' (Lwd.peek var) At.checked);
       ]
     ~ev:[ `P (Elwd.handler Ev.input on_change) ]
     ()
