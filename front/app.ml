@@ -7,16 +7,16 @@ let canvas_elwd image =
   let el =
     El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
   in
-  let vgr = Vg_utils.create (Canvas.of_el el) in
-  let measure_text = Vg_utils.measure_text vgr in
+  let vgr = Vgr_utils.create (Canvas.of_el el) in
+  let measure_text = Vgr_utils.measure_text vgr in
   let first_render = ref true in
   let$ image = image ~measure_text in
   if !first_render then (
     (* Delay the first rendering until the canvas is inserted in the document,
        otherwise the canvas would remain blank. *)
-    ignore (G.request_animation_frame (fun _ -> Vg_utils.render vgr image));
+    ignore (G.request_animation_frame (fun _ -> Vgr_utils.render vgr image));
     first_render := false)
-  else Vg_utils.render vgr image;
+  else Vgr_utils.render vgr image;
   el
 
 let models =

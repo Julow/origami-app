@@ -1,7 +1,7 @@
 open Brr
 open Vg
 open Lwd_infix
-open Ui
+open Draw_utils
 
 type t = {
   x_folds : float list;
@@ -68,10 +68,10 @@ let ui () =
   in
   let inputs =
     [
-      ("Box width", float_input box_w);
-      ("Box length", float_input box_l);
-      ("Box height", float_input box_h);
-      ("With flap", boolean_input with_flap);
+      ("Box width", Ui.float_input box_w);
+      ("Box length", Ui.float_input box_l);
+      ("Box height", Ui.float_input box_h);
+      ("With flap", Ui.boolean_input with_flap);
       ("Paper size", paper_size_txt);
     ]
   in

@@ -2,7 +2,7 @@ open Brr
 open Gg
 open Vg
 open Lwd_infix
-open Ui
+open Draw_utils
 
 type t = {
   x_folds : float * float * float;
@@ -26,8 +26,8 @@ let image t ~measure_text =
        from the center point. *)
     let txt = mm ((diag_len /. 2.) +. x) in
     let x = x *. labels_unit in
-    (text_centered ~measure_text font Color.black txt
-    |> I.move (V2.v x (if below then ~-.2. -. font.Font.size else 2.)))
+    (text_centered ~measure_text txt
+    |> I.move (V2.v x (if below then ~-.2. -. font_size else 2.)))
     ++ rect_mid (P2.v x 0.) (Size2.v 0.3 2.) Color.black
   in
   let label_y y =
@@ -75,13 +75,13 @@ let ui () =
   let t = compute box_w box_h box_l lid in
   let inputs =
     [
-      ("Box width", float_input box_w);
-      ("Box length", float_input box_l);
-      ("Box height", float_input box_h);
+      ("Box width", Ui.float_input box_w);
+      ("Box length", Ui.float_input box_l);
+      ("Box height", Ui.float_input box_h);
       ( "Paper size",
         let$ { paper_size = w, h; _ } = t in
         El.txt' (Printf.sprintf "%dmm x %dmm" w h) );
-      ("Lid", boolean_input lid);
+      ("Lid", Ui.boolean_input lid);
     ]
   in
   (inputs, image t)

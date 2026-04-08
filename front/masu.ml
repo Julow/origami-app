@@ -1,7 +1,6 @@
 open Brr
 open Vg
 open Lwd_infix
-open Ui
 
 let paper_width box_w = box_w /. 0.3536
 
@@ -9,7 +8,7 @@ let ui () =
   let box_w = Lwd.var 100. in
   let inputs =
     [
-      ("Box width", float_input box_w);
+      ("Box width", Ui.float_input box_w);
       ( "Box length",
         let$ w = Lwd.get box_w in
         El.txt' (Printf.sprintf "%.0fmm" w) );
