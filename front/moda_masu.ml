@@ -50,8 +50,17 @@ let image t ~measure_text =
   |> I.rot (Float.pi /. 4.))
   ++ labels_x ++ labels_y
 
-let compute w h l =
-  let$ w = Lwd.get w and$ h = Lwd.get h and$ l = Lwd.get l in
+let lid_padding = 2.
+
+let compute w h l lid =
+  let$ w = Lwd.get w
+  and$ h = Lwd.get h
+  and$ l = Lwd.get l
+  and$ lid = Lwd.get lid in
+  let w, l, h =
+    let d = lid_padding in
+    if lid then (w +. (d *. 2.), l +. (d *. 2.), h -. d) else (w, l, h)
+  in
   let paper_w = int_of_float ((w +. l +. (4.0 *. h)) /. Float.sqrt 2.0) in
   let fold dim i = (dim /. 2.) +. (h *. float i) in
   let x_folds = (fold w 0, fold w 1, fold w 2) in
@@ -62,7 +71,8 @@ let ui () =
   let box_w = Lwd.var 100. in
   let box_h = Lwd.var 30. in
   let box_l = Lwd.var 50. in
-  let t = compute box_w box_h box_l in
+  let lid = Lwd.var false in
+  let t = compute box_w box_h box_l lid in
   let inputs =
     [
       ("Box width", float_input box_w);
@@ -71,6 +81,7 @@ let ui () =
       ( "Paper size",
         let$ { paper_size = w, h; _ } = t in
         El.txt' (Printf.sprintf "%dmm x %dmm" w h) );
+      ("Lid", boolean_input lid);
     ]
   in
   (inputs, image t)
