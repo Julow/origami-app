@@ -2,6 +2,7 @@ open Brr
 open Vg
 open Lwd_infix
 
+let title = "Masu"
 let paper_width box_w = box_w /. 0.3536
 
 let ui () =
@@ -22,4 +23,4 @@ let ui () =
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
-  (inputs, image)
+  Ui.box_ui ~inputs ~image

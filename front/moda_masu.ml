@@ -4,6 +4,8 @@ open Vg
 open Lwd_infix
 open Draw_utils
 
+let title = "Moda Masu"
+
 type t = {
   x_folds : float * float * float;
       (** Coordinate to folds as a distance from the center point. *)
@@ -84,4 +86,4 @@ let ui () =
       ("Lid", Ui.boolean_input lid);
     ]
   in
-  (inputs, image t)
+  Ui.box_ui ~inputs ~image:(image t)

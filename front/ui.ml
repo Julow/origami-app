@@ -1,5 +1,7 @@
 open Brr
+open Brr_canvas
 open Brr_lwd
+open Lwd_infix
 
 let float_input var =
   let on_input ev =
@@ -29,3 +31,37 @@ let boolean_input var =
       ]
     ~ev:[ `P (Elwd.handler Ev.input on_change) ]
     ()
+
+let canvas_elwd image =
+  let el =
+    El.canvas ~at:At.[ int (Jstr.v "width") 400; int (Jstr.v "height") 400 ] []
+  in
+  let vgr = Vgr_utils.create (Canvas.of_el el) in
+  let measure_text = Vgr_utils.measure_text vgr in
+  let first_render = ref true in
+  let$ image = image ~measure_text in
+  if !first_render then (
+    (* Delay the first rendering until the canvas is inserted in the document,
+       otherwise the canvas would remain blank. *)
+    ignore (G.request_animation_frame (fun _ -> Vgr_utils.render vgr image));
+    first_render := false)
+  else Vgr_utils.render vgr image;
+  el
+
+let box_ui ~inputs ~image =
+  let inputs_table =
+    Elwd.table
+      ~at:[ `P (At.class' (Jstr.v "inputs")) ]
+      (List.map
+         (fun (label, elwd) ->
+           `R
+             (Elwd.tr
+                [ `P (El.td [ El.txt' label ]); `R (Elwd.td [ `R elwd ]) ]))
+         inputs)
+  in
+  [
+    `R
+      (Elwd.div
+         ~at:[ `P (At.class' (Jstr.v "content-box")) ]
+         [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
+  ]

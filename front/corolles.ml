@@ -3,6 +3,8 @@ open Vg
 open Lwd_infix
 open Draw_utils
 
+let title = "Corolles"
+
 type t = {
   x_folds : float list;
   y_folds : float list;
@@ -75,4 +77,4 @@ let ui () =
       ("Paper size", paper_size_txt);
     ]
   in
-  (inputs, image t)
+  Ui.box_ui ~inputs ~image:(image t)
