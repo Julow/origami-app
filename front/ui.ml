@@ -62,6 +62,32 @@ let box_ui ~inputs ~image =
   [
     `R
       (Elwd.div
-         ~at:[ `P (At.class' (Jstr.v "content-box")) ]
-         [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
+         [
+           `R
+             (Elwd.div
+                ~at:[ `P (At.class' (Jstr.v "content-box borders")) ]
+                [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
+         ]);
   ]
+
+let resources rs =
+  `P
+    (El.div
+       ~at:[ At.class' (Jstr.v "borders") ]
+       (El.h3 [ El.txt' "Resources" ]
+       :: List.map
+            (fun (title, author, link) ->
+              El.a
+                ~at:
+                  [
+                    At.class' (Jstr.v "resource");
+                    At.href (Jstr.v link);
+                    At.v (Jstr.v "target") (Jstr.v "_blank");
+                  ]
+                [
+                  El.txt' title;
+                  El.span
+                    ~at:[ At.class' (Jstr.v "resource-author") ]
+                    [ El.txt' author ];
+                ])
+            rs))

@@ -24,3 +24,11 @@ let ui () =
   in
   let image ~measure_text:_ = Lwd.pure I.void in
   Ui.box_ui ~inputs ~image
+  @ [
+      Ui.resources
+        [
+          ( "Tuto 2 : Les boîtes Masu",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
+        ];
+    ]

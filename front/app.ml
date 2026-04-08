@@ -14,15 +14,15 @@ let ui =
          [ `P (El.txt' title) ])
   in
   Elwd.div
+    ~at:[ `P (At.class' (Jstr.v "content")) ]
     [
       `R
         (Elwd.div
-           ~at:[ `P (At.class' (Jstr.v "content model-select")) ]
+           ~at:[ `P (At.class' (Jstr.v "model-select")) ]
            (List.map model_select models));
       `R
         (let$* _, ui = Lwd.get model in
          Elwd.div
-           ~at:[ `P (At.class' (Jstr.v "content")) ]
            (`R
               (Elwd.h1
                  [

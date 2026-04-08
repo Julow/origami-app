@@ -1,8 +1,22 @@
+h3
+{
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+
 .content
 {
-  margin: 1em auto;
+  margin: 0 auto;
   max-width: 700px;
   text-align: center;
+}
+
+.borders
+{
+  margin: 2em auto;
+  padding: 1em 1.5em;
+  border: 1px solid #777;
+  border-radius: 1em;
 }
 
 .model-select a
@@ -22,8 +36,7 @@
   display: flex;
   align-items: center;
   gap: 1em;
-  border: 1px solid #777;
-  border-radius: 1em;
+  padding: 0 !important;
 }
 
 .inputs
@@ -42,4 +55,26 @@
 {
   width: 100%;
   box-sizing: border-box;
+}
+
+.resource
+{
+  display: block;
+  margin: 0.3em;
+  padding: 0.2em 0.5em;
+  border-radius: 0.5em;
+  background: #eee;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+}
+
+.resource:hover
+{
+  background: #50c878;
+}
+
+.resource-author
+{
+  margin-left: 1em;
 }
