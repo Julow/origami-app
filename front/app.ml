@@ -2,7 +2,13 @@ open Brr
 open Brr_lwd
 open Lwd_infix
 
-let models = [ Moda_masu.(title, ui); Masu.(title, ui); Corolles.(title, ui) ]
+let models =
+  [
+    Moda_masu.(title, ui);
+    Masu.(title, ui);
+    Baggi.(title, ui);
+    Corolles.(title, ui);
+  ]
 
 let ui =
   let model = Lwd.var (List.hd models) in
