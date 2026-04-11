@@ -3,20 +3,21 @@ open Brr_canvas
 open Brr_lwd
 open Lwd_infix
 
-let float_input var =
+let txtf fmt = Printf.ksprintf El.txt' fmt
+let mm f = string_of_int Float.(to_int (round f)) ^ "mm"
+
+let float_input' set init =
   let on_input ev =
     let target = Ev.target ev |> Ev.target_to_jv |> El.of_jv in
     let value = El.prop El.Prop.value target in
-    Lwd.set var (Jstr.to_float value)
+    set (Jstr.to_float value)
   in
   Elwd.input
-    ~at:
-      [
-        `P (At.type' (Jstr.v "number"));
-        `P (At.value (Jstr.of_float (Lwd.peek var)));
-      ]
+    ~at:[ `P (At.type' (Jstr.v "number")); `P (At.value (Jstr.of_float init)) ]
     ~ev:[ `P (Elwd.handler Ev.input on_input) ]
     ()
+
+let float_input var = float_input' (Lwd.set var) (Lwd.peek var)
 
 let boolean_input var =
   let on_change ev =
@@ -31,6 +32,11 @@ let boolean_input var =
       ]
     ~ev:[ `P (Elwd.handler Ev.input on_change) ]
     ()
+
+let button ?at label handler =
+  Elwd.button ?at
+    ~ev:[ `P (Elwd.handler Ev.click handler) ]
+    [ `P (El.txt' label) ]
 
 let canvas_elwd image =
   let el =
@@ -48,16 +54,13 @@ let canvas_elwd image =
   else Vgr_utils.render vgr image;
   el
 
-let box_ui ~inputs ~image =
+let input_row ?(extra_cols = []) label input =
+  Elwd.tr
+    (`P (El.td [ El.txt' label ]) :: `R (Elwd.td [ `R input ]) :: extra_cols)
+
+let box_ui' ~input_rows ~image =
   let inputs_table =
-    Elwd.table
-      ~at:[ `P (At.class' (Jstr.v "inputs")) ]
-      (List.map
-         (fun (label, elwd) ->
-           `R
-             (Elwd.tr
-                [ `P (El.td [ El.txt' label ]); `R (Elwd.td [ `R elwd ]) ]))
-         inputs)
+    Elwd.table ~at:[ `P (At.class' (Jstr.v "inputs")) ] input_rows
   in
   [
     `R
@@ -69,6 +72,12 @@ let box_ui ~inputs ~image =
                 [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
          ]);
   ]
+
+let box_ui ~inputs ~image =
+  let input_rows =
+    List.map (fun (label, input) -> `R (input_row label input)) inputs
+  in
+  box_ui' ~input_rows ~image
 
 let resources rs =
   `P

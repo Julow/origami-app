@@ -8,6 +8,7 @@ let models =
     Masu.(title, ui);
     Baggi.(title, ui);
     Corolles.(title, ui);
+    Katta_cutters.(title, ui);
   ]
 
 let ui =
