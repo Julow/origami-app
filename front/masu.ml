@@ -30,5 +30,11 @@ let ui () =
           ( "Tuto 2 : Les boîtes Masu",
             "Les ludistes origamistes",
             "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
+          ( "Tutorial 3: Dividers +",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=8r0MMfT0b2I" );
+          ( "Tuto 4 : Les diviseurs en X",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=OGsR5NbUCjs" );
         ];
     ]
