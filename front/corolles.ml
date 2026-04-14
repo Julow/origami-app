@@ -43,11 +43,18 @@ let image t ~measure_text =
   in
   feuille ~w:fw ~h:fh () ++ labels_x ++ labels_y |> I.rot (Float.pi /. 4.)
 
-let ui () =
-  let box_w = Lwd.var 50. in
-  let box_l = Lwd.var 50. in
-  let box_h = Lwd.var 20. in
-  let with_flap = Lwd.var false in
+let ui { Params.Corolles.w; l; h; with_flap } =
+  let box_w = Lwd.var w in
+  let box_l = Lwd.var l in
+  let box_h = Lwd.var h in
+  let with_flap = Lwd.var with_flap in
+  let params =
+    let$ w = Lwd.get box_w
+    and$ l = Lwd.get box_l
+    and$ h = Lwd.get box_h
+    and$ with_flap = Lwd.get with_flap in
+    Params.Corolles { w; l; h; with_flap }
+  in
   let t =
     let$ w = Lwd.get box_w
     and$ l = Lwd.get box_l
@@ -77,10 +84,13 @@ let ui () =
       ("Paper size", paper_size_txt);
     ]
   in
-  Ui.box_ui title ~inputs ~image:(image t)
-    ~resources:
-      [
-        ( "Tuto Origami 12 : Les boîtes corolles",
-          "Mémo-règles Jeux de plateau",
-          "https://www.youtube.com/watch?v=8EJCqO5RVgU" );
-      ]
+  let ui =
+    Ui.box_ui title ~inputs ~image:(image t)
+      ~resources:
+        [
+          ( "Tuto Origami 12 : Les boîtes corolles",
+            "Mémo-règles Jeux de plateau",
+            "https://www.youtube.com/watch?v=8EJCqO5RVgU" );
+        ]
+  in
+  (ui, params)

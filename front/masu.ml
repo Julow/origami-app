@@ -5,8 +5,12 @@ open Lwd_infix
 let title = "Masu"
 let paper_width box_w = box_w /. 0.3536
 
-let ui () =
-  let box_w = Lwd.var 100. in
+let ui { Params.Masu.w } =
+  let box_w = Lwd.var w in
+  let params =
+    let$ w = Lwd.get box_w in
+    Params.Masu { w }
+  in
   let inputs =
     [
       ("Box width", Ui.float_input box_w);
@@ -23,16 +27,19 @@ let ui () =
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
-  Ui.box_ui title ~inputs ~image
-    ~resources:
-      [
-        ( "Tuto 2 : Les boîtes Masu",
-          "Les ludistes origamistes",
-          "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
-        ( "Tutorial 3: Dividers +",
-          "Les ludistes origamistes",
-          "https://www.youtube.com/watch?v=8r0MMfT0b2I" );
-        ( "Tuto 4 : Les diviseurs en X",
-          "Les ludistes origamistes",
-          "https://www.youtube.com/watch?v=OGsR5NbUCjs" );
-      ]
+  let ui =
+    Ui.box_ui title ~inputs ~image
+      ~resources:
+        [
+          ( "Tuto 2 : Les boîtes Masu",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
+          ( "Tutorial 3: Dividers +",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=8r0MMfT0b2I" );
+          ( "Tuto 4 : Les diviseurs en X",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=OGsR5NbUCjs" );
+        ]
+  in
+  (ui, params)

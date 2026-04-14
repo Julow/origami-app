@@ -55,24 +55,31 @@ let compute_t box_w box_h compartments =
   in
   { x_folds; y_folds; paper_size = (paper_w, paper_h) }
 
-let ui () =
-  let box_w = Lwd.var 60. in
-  let box_h = Lwd.var 30. in
+let ui { Params.Katta_cutters.w; h; compartments = comps } =
+  let box_w = Lwd.var w in
+  let box_h = Lwd.var h in
   let compartments = Lwd_table.make () in
   (* Storing variables inside the table to avoid unwanted DOM updates when an
      input changes value. *)
-  ignore (Lwd_table.append ~set:(Lwd.var 50.) compartments);
-  ignore (Lwd_table.append ~set:(Lwd.var 50.) compartments);
-  let add_compartment _ =
-    ignore (Lwd_table.append ~set:(Lwd.var 50.) compartments)
-  in
-  let remove_compartment row _ = Lwd_table.remove row in
+  List.iter
+    (fun v -> ignore (Lwd_table.append ~set:(Lwd.var v) compartments))
+    comps;
   let compartments_sizes =
     Lwd_seq.lift
       (Lwd_table.map_reduce
          (fun _row v -> Lwd_seq.element (Lwd.get v))
          Lwd_seq.monoid compartments)
   in
+  let params =
+    let$ w = Lwd.get box_w
+    and$ h = Lwd.get box_h
+    and$ cs = compartments_sizes in
+    Params.Katta_cutters { w; h; compartments = Lwd_seq.to_list cs }
+  in
+  let add_compartment _ =
+    ignore (Lwd_table.append ~set:(Lwd.var 50.) compartments)
+  in
+  let remove_compartment row _ = Lwd_table.remove row in
   let t = compute_t box_w box_h compartments_sizes in
   let compartment_count =
     Lwd_table.map_reduce (fun _ _ -> 1) (0, ( + )) compartments
@@ -116,10 +123,13 @@ let ui () =
       `R (Ui.input_row "Paper size" paper_size_txt);
     ]
   in
-  Ui.box_ui' title ~input_rows ~image:(image t)
-    ~resources:
-      [
-        ( "[EN] Tutorial #5 : Katta « cutter » dividers",
-          "Les ludistes origamistes",
-          "https://www.youtube.com/watch?v=aRs5pmxcjlw" );
-      ]
+  let ui =
+    Ui.box_ui' title ~input_rows ~image:(image t)
+      ~resources:
+        [
+          ( "[EN] Tutorial #5 : Katta « cutter » dividers",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=aRs5pmxcjlw" );
+        ]
+  in
+  (ui, params)

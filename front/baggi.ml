@@ -8,9 +8,13 @@ let paper_size box_w box_l =
   let$ w = Lwd.get box_w and$ l = Lwd.get box_l in
   (int_of_float (4. *. w), int_of_float (l +. (2. *. w)))
 
-let ui () =
-  let box_w = Lwd.var 30. in
-  let box_l = Lwd.var 100. in
+let ui { Params.Baggi.w; l } =
+  let box_w = Lwd.var w in
+  let box_l = Lwd.var l in
+  let params =
+    let$ w = Lwd.get box_w and$ l = Lwd.get box_l in
+    Params.Baggi { w; l }
+  in
   let inputs =
     [
       ("Box width", Ui.float_input box_w);
@@ -24,10 +28,11 @@ let ui () =
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
-  Ui.box_ui title ~inputs ~image
-    ~resources:
-      [
-        ( "Tuto 1 : Les boîtes baggi",
-          "Les ludistes origamistes",
-          "https://www.youtube.com/watch?v=ZdtQVv-AxR0" );
-      ]
+  ( Ui.box_ui title ~inputs ~image
+      ~resources:
+        [
+          ( "Tuto 1 : Les boîtes baggi",
+            "Les ludistes origamistes",
+            "https://www.youtube.com/watch?v=ZdtQVv-AxR0" );
+        ],
+    params )
