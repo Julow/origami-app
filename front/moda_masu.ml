@@ -86,12 +86,10 @@ let ui () =
       ("Lid", Ui.boolean_input lid);
     ]
   in
-  Ui.box_ui ~inputs ~image:(image t)
-  @ [
-      Ui.resources
-        [
-          ( "Tuto 5 : Les boîte Moda Masu",
-            "Les ludistes origamistes",
-            "https://www.youtube.com/watch?v=fxZMY6v3big" );
-        ];
-    ]
+  Ui.box_ui title ~inputs ~image:(image t)
+    ~resources:
+      [
+        ( "Tuto 5 : Les boîte Moda Masu",
+          "Les ludistes origamistes",
+          "https://www.youtube.com/watch?v=fxZMY6v3big" );
+      ]

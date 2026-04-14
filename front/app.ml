@@ -1,6 +1,5 @@
 open Brr
 open Brr_lwd
-open Lwd_infix
 
 let models =
   [
@@ -12,9 +11,9 @@ let models =
   ]
 
 let ui =
-  let model = Lwd.var (List.hd models) in
-  let model_select ((title, _) as m) =
-    let on_click _ = Lwd.set model m in
+  let box_ui = Lwd.var (snd (List.hd models) ()) in
+  let model_select (title, ui) =
+    let on_click _ = Lwd.set box_ui (ui ()) in
     `R
       (Elwd.a
          ~ev:[ `P (Elwd.handler Ev.click on_click) ]
@@ -27,17 +26,7 @@ let ui =
         (Elwd.div
            ~at:[ `P (At.class' (Jstr.v "model-select")) ]
            (List.map model_select models));
-      `R
-        (let$* _, ui = Lwd.get model in
-         Elwd.div
-           (`R
-              (Elwd.h1
-                 [
-                   `R
-                     (let$ title, _ = Lwd.get model in
-                      El.txt' title);
-                 ])
-           :: ui ()));
+      `R (Lwd.bind (Lwd.get box_ui) ~f:Elwd.div);
     ]
 
 let () = Brr_lwd_utils.start ui

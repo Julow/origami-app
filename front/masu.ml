@@ -23,18 +23,16 @@ let ui () =
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
-  Ui.box_ui ~inputs ~image
-  @ [
-      Ui.resources
-        [
-          ( "Tuto 2 : Les boîtes Masu",
-            "Les ludistes origamistes",
-            "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
-          ( "Tutorial 3: Dividers +",
-            "Les ludistes origamistes",
-            "https://www.youtube.com/watch?v=8r0MMfT0b2I" );
-          ( "Tuto 4 : Les diviseurs en X",
-            "Les ludistes origamistes",
-            "https://www.youtube.com/watch?v=OGsR5NbUCjs" );
-        ];
-    ]
+  Ui.box_ui title ~inputs ~image
+    ~resources:
+      [
+        ( "Tuto 2 : Les boîtes Masu",
+          "Les ludistes origamistes",
+          "https://www.youtube.com/watch?v=V2q5CyjfEKs" );
+        ( "Tutorial 3: Dividers +",
+          "Les ludistes origamistes",
+          "https://www.youtube.com/watch?v=8r0MMfT0b2I" );
+        ( "Tuto 4 : Les diviseurs en X",
+          "Les ludistes origamistes",
+          "https://www.youtube.com/watch?v=OGsR5NbUCjs" );
+      ]

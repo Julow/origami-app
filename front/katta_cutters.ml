@@ -116,12 +116,10 @@ let ui () =
       `R (Ui.input_row "Paper size" paper_size_txt);
     ]
   in
-  Ui.box_ui' ~input_rows ~image:(image t)
-  @ [
-      Ui.resources
-        [
-          ( "[EN] Tutorial #5 : Katta « cutter » dividers",
-            "Les ludistes origamistes",
-            "https://www.youtube.com/watch?v=aRs5pmxcjlw" );
-        ];
-    ]
+  Ui.box_ui' title ~input_rows ~image:(image t)
+    ~resources:
+      [
+        ( "[EN] Tutorial #5 : Katta « cutter » dividers",
+          "Les ludistes origamistes",
+          "https://www.youtube.com/watch?v=aRs5pmxcjlw" );
+      ]

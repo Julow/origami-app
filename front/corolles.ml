@@ -77,12 +77,10 @@ let ui () =
       ("Paper size", paper_size_txt);
     ]
   in
-  Ui.box_ui ~inputs ~image:(image t)
-  @ [
-      Ui.resources
-        [
-          ( "Tuto Origami 12 : Les boîtes corolles",
-            "Mémo-règles Jeux de plateau",
-            "https://www.youtube.com/watch?v=8EJCqO5RVgU" );
-        ];
-    ]
+  Ui.box_ui title ~inputs ~image:(image t)
+    ~resources:
+      [
+        ( "Tuto Origami 12 : Les boîtes corolles",
+          "Mémo-règles Jeux de plateau",
+          "https://www.youtube.com/watch?v=8EJCqO5RVgU" );
+      ]
