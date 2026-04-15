@@ -58,28 +58,7 @@ let input_row ?(extra_cols = []) label input =
   Elwd.tr
     (`P (El.td [ El.txt' label ]) :: `R (Elwd.td [ `R input ]) :: extra_cols)
 
-let box_ui' ~input_rows ~image =
-  let inputs_table =
-    Elwd.table ~at:[ `P (At.class' (Jstr.v "inputs")) ] input_rows
-  in
-  [
-    `R
-      (Elwd.div
-         [
-           `R
-             (Elwd.div
-                ~at:[ `P (At.class' (Jstr.v "content-box borders")) ]
-                [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
-         ]);
-  ]
-
-let box_ui ~inputs ~image =
-  let input_rows =
-    List.map (fun (label, input) -> `R (input_row label input)) inputs
-  in
-  box_ui' ~input_rows ~image
-
-let resources rs =
+let resources_ui rs =
   `P
     (El.div
        ~at:[ At.class' (Jstr.v "borders") ]
@@ -100,3 +79,27 @@ let resources rs =
                     [ El.txt' author ];
                 ])
             rs))
+
+let box_ui' title ~input_rows ~image ~resources =
+  let resources = match resources with [] -> [] | rs -> [ resources_ui rs ] in
+  let inputs_table =
+    Elwd.table ~at:[ `P (At.class' (Jstr.v "inputs")) ] input_rows
+  in
+  [
+    `P (El.h1 [ El.txt' title ]);
+    `R
+      (Elwd.div
+         [
+           `R
+             (Elwd.div
+                ~at:[ `P (At.class' (Jstr.v "content-box borders")) ]
+                [ `R inputs_table; `R (Elwd.div [ `R (canvas_elwd image) ]) ]);
+         ]);
+  ]
+  @ resources
+
+let box_ui title ~inputs ~image ~resources =
+  let input_rows =
+    List.map (fun (label, input) -> `R (input_row label input)) inputs
+  in
+  box_ui' title ~input_rows ~image ~resources

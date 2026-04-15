@@ -69,11 +69,18 @@ let compute w h l lid =
   let y_folds = (fold l 0, fold l 1, fold l 2) in
   { x_folds; y_folds; paper_size = (paper_w, paper_w) }
 
-let ui () =
-  let box_w = Lwd.var 100. in
-  let box_h = Lwd.var 30. in
-  let box_l = Lwd.var 50. in
-  let lid = Lwd.var false in
+let ui { Params.Moda_masu.w; l; h; lid } =
+  let box_w = Lwd.var w in
+  let box_h = Lwd.var h in
+  let box_l = Lwd.var l in
+  let lid = Lwd.var lid in
+  let params =
+    let$ w = Lwd.get box_w
+    and$ l = Lwd.get box_l
+    and$ h = Lwd.get box_h
+    and$ lid = Lwd.get lid in
+    Params.Moda_masu { w; l; h; lid }
+  in
   let t = compute box_w box_h box_l lid in
   let inputs =
     [
@@ -86,12 +93,13 @@ let ui () =
       ("Lid", Ui.boolean_input lid);
     ]
   in
-  Ui.box_ui ~inputs ~image:(image t)
-  @ [
-      Ui.resources
+  let ui =
+    Ui.box_ui title ~inputs ~image:(image t)
+      ~resources:
         [
           ( "Tuto 5 : Les boîte Moda Masu",
             "Les ludistes origamistes",
             "https://www.youtube.com/watch?v=fxZMY6v3big" );
-        ];
-    ]
+        ]
+  in
+  (ui, params)
