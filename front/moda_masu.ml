@@ -38,6 +38,13 @@ let image t ~measure_text =
     let y = y *. labels_unit in
     label_right 0. y text
   in
+  let label_c =
+    let text = mm (diag_len /. 2.) in
+    (text_left ~measure_text text
+    |> I.move (V2.v ~-.2. (font.Font.size /. ~-.3.)))
+    ++ rect_mid (P2.v 0. 0.) (Size2.v 2. 0.3) Color.black
+    |> I.rot (Float.pi /. 4.)
+  in
   let labels_x =
     let a, b, c = t.x_folds in
     label_x a ++ label_x ~below:true b ++ label_x c ++ label_x ~-.a
@@ -50,7 +57,7 @@ let image t ~measure_text =
   in
   (feuille () ++ diag (Float.pi /. 4.) 0.3 ++ diag ~-.(Float.pi /. 4.) 0.3
   |> I.rot (Float.pi /. 4.))
-  ++ labels_x ++ labels_y
+  ++ labels_x ++ labels_y ++ label_c
 
 let lid_padding = 2.
 

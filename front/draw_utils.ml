@@ -17,6 +17,11 @@ let text_centered ~measure_text ?(font = font) ?(color = Color.black) text =
   I.cut_glyphs ~text font [] (I.const color)
   |> I.move (V2.v (~-.(measure_text font text) /. 2.) 0.)
 
+(** Draw text anchored on the left of [0] on the [x] axis. *)
+let text_left ~measure_text ?(font = font) ?(color = Color.black) text =
+  I.cut_glyphs ~text font [] (I.const color)
+  |> I.move (V2.v ~-.(measure_text font text) 0.)
+
 (** Draw a rect centered on the given position with the given size. *)
 let rect_mid pos size color =
   let p = P.empty |> P.rect (Box2.v_mid pos size) in
