@@ -42,6 +42,13 @@ let ui state =
       `R
         (let$* ui_elts, _ = Lwd.get state in
          Elwd.div ui_elts);
+      `P
+        (El.footer
+           [
+             El.a
+               ~at:[ At.href (Jstr.v "https://github.com/Julow/origami-app") ]
+               [ El.txt' "Source code" ];
+           ]);
     ]
 
 let url state =
