@@ -1,7 +1,39 @@
+:root
+{
+  --color1: #50c878;
+  --color2_light: #ffe9a6;
+  --color2: #ffdf82; /* Generated with https://mycolor.space/?hex=%2350C878&sub=1 */
+  --color3: #c7a84d;
+  --color4: #8e7519;
+  --background: #fff9e5;
+  --foreground: #2b2408;
+}
+
+body
+{
+  background: var(--background);
+}
+
+h1, h3
+{
+  color: var(--foreground);
+}
+
 h3
 {
   margin: 0 0 1em 0;
   text-align: left;
+}
+
+a
+{
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+a:hover
+{
+  color: var(--color1);
 }
 
 .content
@@ -21,20 +53,37 @@ footer
 {
   margin: 2em auto;
   padding: 1em 1.5em;
-  border: 1px solid #777;
+  background: var(--color2_light);
+  border: 0.1em solid var(--color4);
   border-radius: 1em;
+}
+
+.model-select
+{
+  padding: 1em 0;
 }
 
 .model-select a
 {
+  padding: 0.5em;
   cursor: pointer;
+  color: black;
 }
 
-.model-select a + a::before
+.model-select a:hover
 {
-  content: " | ";
-  cursor: default;
-  color: #777;
+  background: var(--color2);
+}
+
+.model-select .divider:first-child
+{
+  display: none;
+}
+
+.model-select .divider
+{
+  margin: 0 0.2em;
+  border-left: 0.15em solid var(--color4);
 }
 
 .content-box
@@ -69,7 +118,6 @@ footer
   margin: 0.3em;
   padding: 0.2em 0.5em;
   border-radius: 0.5em;
-  background: #eee;
   text-align: left;
   text-decoration: none;
   color: inherit;
@@ -77,7 +125,8 @@ footer
 
 .resource:hover
 {
-  background: #50c878;
+  background: var(--color1);
+  color: var(--foreground);
 }
 
 .resource-author
