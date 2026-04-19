@@ -105,7 +105,7 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
     Elwd.tr
       [
         `R (Elwd.td ~at:[ `P (At.int (Jstr.v "colspan") 2) ] [ `R count ]);
-        `R (Ui.button "+" add_compartment);
+        `R (Elwd.td [ `R (Ui.button "+" add_compartment) ]);
       ]
   in
   let paper_size_txt =
