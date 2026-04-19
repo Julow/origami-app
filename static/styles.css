@@ -1,7 +1,6 @@
 :root
 {
   --color1: #50c878;
-  --color2_light: #ffe9a6;
   --color2: #ffdf82; /* Generated with https://mycolor.space/?hex=%2350C878&sub=1 */
   --color3: #c7a84d;
   --color4: #8e7519;
@@ -27,13 +26,17 @@ h3
 
 a
 {
+  border: 0 solid var(--color4);
+  border-bottom-width: 0.1em;
   text-decoration: none;
   color: var(--foreground);
 }
 
 a:hover
 {
-  color: var(--color1);
+  background: var(--color2);
+  color: black;
+  cursor: pointer;
 }
 
 .content
@@ -53,9 +56,7 @@ footer
 {
   margin: 2em auto;
   padding: 1em 1.5em;
-  background: var(--color2_light);
   border: 0.1em solid var(--color4);
-  border-radius: 1em;
 }
 
 .model-select
@@ -68,13 +69,6 @@ footer
 .model-select a
 {
   padding: 0.5em;
-  cursor: pointer;
-  color: black;
-}
-
-.model-select a:hover
-{
-  background: var(--color2);
 }
 
 .content-box
@@ -109,16 +103,7 @@ footer
   display: block;
   margin: 0.3em;
   padding: 0.2em 0.5em;
-  border-radius: 0.5em;
   text-align: left;
-  text-decoration: none;
-  color: inherit;
-}
-
-.resource:hover
-{
-  background: var(--color1);
-  color: var(--foreground);
 }
 
 .resource-author
