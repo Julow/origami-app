@@ -55,6 +55,11 @@ let compute_t box_w box_h compartments =
   in
   { x_folds; y_folds; paper_size = (paper_w, paper_h) }
 
+let button_col ?(at = []) txt callback =
+  Elwd.td
+    ~at:(`P (At.class' (Jstr.v "button-col")) :: at)
+    [ `R (Ui.button txt callback) ]
+
 let ui { Params.Katta_cutters.w; h; compartments = comps } =
   let box_w = Lwd.var w in
   let box_h = Lwd.var h in
@@ -85,17 +90,14 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
     Lwd_table.map_reduce (fun _ _ -> 1) (0, ( + )) compartments
   in
   let compartment_row row v =
-    let remove_button =
+    let extra_cols =
       let hidden =
         let$ compartment_count in
         At.if' (compartment_count <= 2) At.hidden
       in
-      Ui.button ~at:[ `R hidden ] "×" (remove_compartment row)
+      [ `R (button_col ~at:[ `R hidden ] "×" (remove_compartment row)) ]
     in
-    Lwd_seq.element
-      (Ui.input_row "Compartment"
-         ~extra_cols:[ `R (Elwd.td [ `R remove_button ]) ]
-         (Ui.float_input v))
+    Lwd_seq.element (Ui.input_row "Compartment" ~extra_cols (Ui.float_input v))
   in
   let comp_add_row =
     let count =
@@ -105,7 +107,7 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
     Elwd.tr
       [
         `R (Elwd.td ~at:[ `P (At.int (Jstr.v "colspan") 2) ] [ `R count ]);
-        `R (Elwd.td [ `R (Ui.button "+" add_compartment) ]);
+        `R (button_col "+" add_compartment);
       ]
   in
   let paper_size_txt =

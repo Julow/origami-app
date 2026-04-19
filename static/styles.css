@@ -60,7 +60,9 @@ footer
 
 .model-select
 {
-  padding: 1em 0;
+  display: flex;
+  gap: 1em;
+  justify-content: center;
 }
 
 .model-select a
@@ -73,17 +75,6 @@ footer
 .model-select a:hover
 {
   background: var(--color2);
-}
-
-.model-select .divider:first-child
-{
-  display: none;
-}
-
-.model-select .divider
-{
-  margin: 0 0.2em;
-  border-left: 0.15em solid var(--color4);
 }
 
 .content-box
@@ -110,6 +101,7 @@ footer
 {
   width: 100%;
   box-sizing: border-box;
+  padding: 0.1em 0.2em;
 }
 
 .resource
@@ -132,4 +124,35 @@ footer
 .resource-author
 {
   margin-left: 1em;
+}
+
+@media screen and (max-width: 40rem)
+{
+  .model-select
+  {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: 2em 10%;
+  }
+
+  .borders
+  {
+    background: none;
+    border: none;
+  }
+
+  .content-box
+  {
+    flex-direction: column;
+  }
+
+  .inputs td.button-col
+  {
+    text-align: left;
+  }
+
+  .inputs input
+  {
+    padding: 0.3em;
+  }
 }

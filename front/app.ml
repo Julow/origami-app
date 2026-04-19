@@ -27,13 +27,10 @@ let ui state =
       Url_utils.push ();
       Lwd.set state (apply_params (snd model))
     in
-    [
-      `P (El.span ~at:[ At.class' (Jstr.v "divider") ] []);
-      `R
-        (Elwd.a
-           ~ev:[ `P (Elwd.handler Ev.click on_click) ]
-           [ `P (El.txt' (fst model)) ]);
-    ]
+    `R
+      (Elwd.a
+         ~ev:[ `P (Elwd.handler Ev.click on_click) ]
+         [ `P (El.txt' (fst model)) ])
   in
   Elwd.div
     ~at:[ `P (At.class' (Jstr.v "content")) ]
@@ -41,7 +38,7 @@ let ui state =
       `R
         (Elwd.div
            ~at:[ `P (At.class' (Jstr.v "model-select")) ]
-           (List.concat_map model_select models));
+           (List.map model_select models));
       `R
         (let$* ui_elts, _ = Lwd.get state in
          Elwd.div ui_elts);
