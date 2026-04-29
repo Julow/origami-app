@@ -111,7 +111,7 @@ footer
   margin-left: 1em;
 }
 
-@media screen and (max-width: 40rem)
+@media screen and (max-width: 48rem)
 {
   .model-select
   {
