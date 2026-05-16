@@ -81,9 +81,9 @@ footer
 
 .inputs
 {
-  padding: 1em;
-  flex: 1;
   width: 100%;
+  table-layout: fixed;
+  padding: 1em;
 }
 
 .inputs td
@@ -93,9 +93,17 @@ footer
 
 .inputs input
 {
-  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* Allows [.inputs-group]. */
   box-sizing: border-box;
   padding: 0.1em 0.2em;
+}
+
+/** Display several inputs in the same cell. */
+.inputs-group
+{
+  display: flex;
+  gap: 0.2em;
 }
 
 .resource

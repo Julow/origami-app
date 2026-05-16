@@ -1,16 +1,20 @@
 open Brr
+open Brr_lwd
 open Gg
 open Vg
 open Lwd_infix
 open Draw_utils
+open Params.Moda_masu
 
 let title = "Moda Masu"
+let seq_lift_list l = Lwd_seq.lift (Lwd.pure (Lwd_seq.of_list l))
 
 type t = {
   x_folds : float * float * float;
       (** Coordinate to folds as a distance from the center point. *)
   y_folds : float * float * float;
   paper_size : int * int;
+  lidh : float;  (** The height difference between the box and the lid. *)
 }
 
 let image t ~measure_text =
@@ -59,49 +63,70 @@ let image t ~measure_text =
   |> I.rot (Float.pi /. 4.))
   ++ labels_x ++ labels_y ++ label_c
 
-let lid_padding = 2.
+let lid_padding = (2., 4.)
 
-let compute w h l lid =
-  let$ w = Lwd.get w
-  and$ h = Lwd.get h
-  and$ l = Lwd.get l
-  and$ lid = Lwd.get lid in
+let compute { w; l; h; lid; lid_margin_w; lid_margin_l } =
+  let lidh = (lid_margin_w +. lid_margin_l) /. 4. in
   let w, l, h =
-    let d = lid_padding in
-    if lid then (w +. (d *. 2.), l +. (d *. 2.), h -. d) else (w, l, h)
+    if lid then (w +. lid_margin_w, l +. lid_margin_l, h -. lidh) else (w, l, h)
   in
   let paper_w = int_of_float ((w +. l +. (4.0 *. h)) /. Float.sqrt 2.0) in
   let fold dim i = (dim /. 2.) +. (h *. float i) in
   let x_folds = (fold w 0, fold w 1, fold w 2) in
   let y_folds = (fold l 0, fold l 1, fold l 2) in
-  { x_folds; y_folds; paper_size = (paper_w, paper_w) }
+  { x_folds; y_folds; paper_size = (paper_w, paper_w); lidh }
 
-let ui { Params.Moda_masu.w; l; h; lid } =
+let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
   let box_w = Lwd.var w in
   let box_h = Lwd.var h in
   let box_l = Lwd.var l in
   let lid = Lwd.var lid in
+  let lid_margin_w = Lwd.var lid_margin_w in
+  let lid_margin_l = Lwd.var lid_margin_l in
   let params =
     let$ w = Lwd.get box_w
     and$ l = Lwd.get box_l
     and$ h = Lwd.get box_h
-    and$ lid = Lwd.get lid in
-    Params.Moda_masu { w; l; h; lid }
+    and$ lid = Lwd.get lid
+    and$ lid_margin_w = Lwd.get lid_margin_w
+    and$ lid_margin_l = Lwd.get lid_margin_l in
+    { w; l; h; lid; lid_margin_w; lid_margin_l }
   in
-  let t = compute box_w box_h box_l lid in
-  let inputs =
+  let t = Lwd.map ~f:compute params in
+  let input_rows =
     [
-      ("Box width", Ui.float_input box_w);
-      ("Box length", Ui.float_input box_l);
-      ("Box height", Ui.float_input box_h);
-      ( "Paper size",
-        let$ { paper_size = w, h; _ } = t in
-        El.txt' (Printf.sprintf "%dmm x %dmm" w h) );
-      ("Lid", Ui.boolean_input lid);
+      `R (Ui.input_row "Box width" (Ui.float_input box_w));
+      `R (Ui.input_row "Box length" (Ui.float_input box_l));
+      `R (Ui.input_row "Box height" (Ui.float_input box_h));
+      `R
+        (Ui.input_row "Paper size"
+           (let$ { paper_size = w, h; _ } = t in
+            El.txt' (Printf.sprintf "%dmm x %dmm" w h)));
+      `R (Ui.input_row "Lid" (Ui.boolean_input lid));
+      `S
+        (let$ lid_inputs =
+           let lidh_txt =
+             let$ { lidh; _ } = t in
+             El.txt' (Ui.mm lidh)
+           in
+           seq_lift_list
+             [
+               Ui.input_row "Lid margin"
+                 (Elwd.div
+                    ~at:[ `P (At.class' (Jstr.v "inputs-group")) ]
+                    [
+                      `R (Ui.float_input lid_margin_w);
+                      `P (El.txt' " x ");
+                      `R (Ui.float_input lid_margin_l);
+                    ]);
+               Ui.input_row "Lid height difference" lidh_txt;
+             ]
+         and$ { lid; _ } = params in
+         if lid then lid_inputs else Lwd_seq.empty);
     ]
   in
   let ui =
-    Ui.box_ui title ~inputs ~image:(image t)
+    Ui.box_ui' title ~input_rows ~image:(image t)
       ~resources:
         [
           ( "Tuto 5 : Les boîte Moda Masu",
@@ -109,4 +134,6 @@ let ui { Params.Moda_masu.w; l; h; lid } =
             "https://www.youtube.com/watch?v=fxZMY6v3big" );
         ]
   in
-  (ui, params)
+  ( ui,
+    let$ params in
+    Params.Moda_masu params )

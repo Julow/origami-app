@@ -5,9 +5,24 @@ module Masu = struct
 end
 
 module Moda_masu = struct
-  type t = { w : float; l : float; h : float; lid : bool }
+  type t = {
+    w : float;
+    l : float;
+    h : float;
+    lid : bool;
+    lid_margin_w : float;
+    lid_margin_l : float;
+  }
 
-  let default = { w = 100.; l = 50.; h = 30.; lid = false }
+  let default =
+    {
+      w = 100.;
+      l = 50.;
+      h = 30.;
+      lid = false;
+      lid_margin_w = 4.;
+      lid_margin_l = 4.;
+    }
 end
 
 module Baggi = struct
@@ -40,7 +55,8 @@ let encode =
   let float v = Printf.sprintf "%g" v in
   function
   | Masu { w } -> spf "masu,%g" w
-  | Moda_masu { w; l; h; lid } -> spf "moda-masu,%g,%g,%g,%b" w l h lid
+  | Moda_masu { w; l; h; lid; lid_margin_w; lid_margin_l } ->
+      spf "moda-masu,%g,%g,%g,%b,%g,%g" w l h lid lid_margin_w lid_margin_l
   | Baggi { w; l } -> spf "baggi,%g,%g" w l
   | Corolles { w; l; h; with_flap } ->
       spf "corolles,%g,%g,%g,%b" w l h with_flap
@@ -64,9 +80,14 @@ let decode fragment =
   | [ "masu"; w ] ->
       let+ w = float w in
       Masu { w }
-  | [ "moda-masu"; w; l; h; lid ] ->
-      let+ w = float w and+ l = float l and+ h = float h and+ lid = bool lid in
-      Moda_masu { w; l; h; lid }
+  | [ "moda-masu"; w; l; h; lid; lidw; lidl ] ->
+      let+ w = float w
+      and+ l = float l
+      and+ h = float h
+      and+ lid = bool lid
+      and+ lid_margin_w = float lidw
+      and+ lid_margin_l = float lidl in
+      Moda_masu { w; l; h; lid; lid_margin_w; lid_margin_l }
   | [ "baggi"; w; l ] ->
       let+ w = float w and+ l = float l in
       Baggi { w; l }
