@@ -50,6 +50,8 @@ type t =
   | Corolles of Corolles.t
   | Katta_cutters of Katta_cutters.t
 
+let default = Moda_masu Moda_masu.default
+
 let encode =
   let spf = Printf.sprintf in
   let float v = Printf.sprintf "%g" v in
@@ -64,42 +66,53 @@ let encode =
       spf "accordion-style-divider,%g,%g,%s" w h
         (String.concat "," (List.map float compartments))
 
+let rec fold_until acc f = function
+  | hd :: tl -> (
+      match f hd with Some e -> fold_until (e :: acc) f tl | None -> acc)
+  | [] -> acc
+
 let decode fragment =
-  let ( let+ ) x f = Option.map f x in
-  let ( and+ ) a b =
-    match (a, b) with Some a, Some b -> Some (a, b) | _ -> None
+  let args = ref (String.split_on_char ',' fragment) in
+  let get ~default f =
+    match !args with
+    | hd :: tl ->
+        args := tl;
+        Option.value (f hd) ~default
+    | [] -> default
   in
-  let float = float_of_string_opt in
-  let bool = bool_of_string_opt in
-  let rec list acc f = function
-    | hd :: tl -> (
-        match f hd with Some e -> list (e :: acc) f tl | None -> None)
-    | [] -> Some (List.rev acc)
+  let string default = get ~default (fun x -> Some x) in
+  let float default = get ~default float_of_string_opt in
+  let bool default = get ~default bool_of_string_opt in
+  let list default f =
+    match !args with
+    | [] -> default
+    | args' ->
+        args := [];
+        List.rev (fold_until [] f args')
   in
-  match String.split_on_char ',' fragment with
-  | [ "masu"; w ] ->
-      let+ w = float w in
+  match string "" with
+  | "masu" ->
+      let w = float Masu.default.w in
       Masu { w }
-  | [ "moda-masu"; w; l; h; lid; lidw; lidl ] ->
-      let+ w = float w
-      and+ l = float l
-      and+ h = float h
-      and+ lid = bool lid
-      and+ lid_margin_w = float lidw
-      and+ lid_margin_l = float lidl in
+  | "moda-masu" ->
+      let d = Moda_masu.default in
+      let w = float d.w and l = float d.l and h = float d.h in
+      let lid = bool d.lid in
+      let lid_margin_w = float d.lid_margin_w
+      and lid_margin_l = float d.lid_margin_l in
       Moda_masu { w; l; h; lid; lid_margin_w; lid_margin_l }
-  | [ "baggi"; w; l ] ->
-      let+ w = float w and+ l = float l in
+  | "baggi" ->
+      let d = Baggi.default in
+      let w = float d.w and l = float d.l in
       Baggi { w; l }
-  | [ "corolles"; w; l; h; with_flap ] ->
-      let+ w = float w
-      and+ l = float l
-      and+ h = float h
-      and+ with_flap = bool with_flap in
+  | "corolles" ->
+      let d = Corolles.default in
+      let w = float d.w and l = float d.l and h = float d.h in
+      let with_flap = bool d.with_flap in
       Corolles { w; l; h; with_flap }
-  | "accordion-style-divider" :: w :: h :: (_ :: _ :: _ as compartments) ->
-      let+ w = float w
-      and+ h = float h
-      and+ compartments = list [] float compartments in
+  | "accordion-style-divider" ->
+      let d = Katta_cutters.default in
+      let w = float d.w and h = float d.h in
+      let compartments = list d.compartments float_of_string_opt in
       Katta_cutters { w; h; compartments }
-  | _ -> None
+  | _ -> default

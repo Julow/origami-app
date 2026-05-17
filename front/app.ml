@@ -57,9 +57,7 @@ let url state =
     Lwd.map p ~f:Params.encode
   in
   let on_params_change fragment =
-    match Params.decode fragment with
-    | Some p -> Lwd.set state (apply_params p)
-    | None -> ()
+    Lwd.set state (apply_params (Params.decode fragment))
   in
   on_params_change (Url_utils.start ~on_change:on_params_change fragment)
 
