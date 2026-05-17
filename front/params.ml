@@ -50,12 +50,12 @@ module Moda_masu = struct
 
   let default =
     {
-      w = 100.;
-      l = 50.;
-      h = 30.;
+      w = 50.;
+      l = 100.;
+      h = 40.;
       lid = false;
-      lid_margin_w = 4.;
-      lid_margin_l = 4.;
+      lid_margin_w = 1.5;
+      lid_margin_l = 3.;
     }
 
   let decode () =
