@@ -113,7 +113,6 @@ let default = Moda_masu Moda_masu.default
 
 let encode =
   let spf = Printf.sprintf in
-  let float v = Printf.sprintf "%g" v in
   function
   | Masu { w } -> spf "masu,%g" w
   | Moda_masu { w; l; h; lid; lid_margin_w; lid_margin_l } ->
@@ -123,7 +122,7 @@ let encode =
       spf "corolles,%g,%g,%g,%b" w l h with_flap
   | Katta_cutters { w; h; compartments } ->
       spf "accordion-style-divider,%g,%g,%s" w h
-        (String.concat "," (List.map float compartments))
+        (String.concat "," (List.map (spf "%g") compartments))
 
 let decode fragment =
   Decoder.args := String.split_on_char ',' fragment;

@@ -26,11 +26,10 @@ let image t ~measure_text =
   in
   (* Convert from paper coordinate to image coordinate. *)
   let labels_unit = view_diag_len /. diag_len in
-  let mm v = Printf.sprintf "%.0fmm" (Float.round v) in
   let label_x ?(below = false) x =
     (* Display a distance from an edge of the diagonal instead of a distance
        from the center point. *)
-    let txt = mm ((diag_len /. 2.) +. x) in
+    let txt = Ui.mm ((diag_len /. 2.) +. x) in
     let x = x *. labels_unit in
     (text_centered ~measure_text txt
     |> I.move (V2.v x (if below then ~-.2. -. font_size else 2.)))
@@ -38,12 +37,12 @@ let image t ~measure_text =
   in
   let label_y y =
     (* Invert the scale for aesthetic purposes. *)
-    let text = mm (diag_len -. ((diag_len /. 2.) +. y)) in
+    let text = Ui.mm (diag_len -. ((diag_len /. 2.) +. y)) in
     let y = y *. labels_unit in
     label_right 0. y text
   in
   let label_c =
-    let text = mm (diag_len /. 2.) in
+    let text = Ui.mm (diag_len /. 2.) in
     (text_left ~measure_text text
     |> I.move (V2.v ~-.2. (font.Font.size /. ~-.3.)))
     ++ rect_mid (P2.v 0. 0.) (Size2.v 2. 0.3) Color.black
@@ -101,7 +100,7 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
       `R
         (Ui.input_row "Paper size"
            (let$ { paper_size = w, h; _ } = t in
-            El.txt' (Printf.sprintf "%dmm x %dmm" w h)));
+            El.txt' (Printf.sprintf "%d x %d" w h)));
       `R (Ui.input_row "Lid" (Ui.boolean_input lid));
       `S
         (let$ lid_inputs =

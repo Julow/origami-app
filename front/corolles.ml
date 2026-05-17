@@ -23,22 +23,20 @@ let image t ~measure_text =
   let labels_x =
     List.fold_left
       (fun acc fold ->
-        let text = Printf.sprintf "%.0fmm" fold in
         acc
         ++ label_left ~measure_text ~rot_line:(Float.pi /. -2.)
              ~rot_text:(Float.pi /. -4.)
              (fx +. (fold *. x_unit))
-             ~-.fy text)
+             ~-.fy (Ui.mm fold))
       I.void t.x_folds
   in
   let labels_y =
     List.fold_left
       (fun acc fold ->
-        let text = Printf.sprintf "%.0fmm" fold in
         acc
         ++ label_right ~rot_text:(Float.pi /. -4.) ~-.fx
              (fy +. (fold *. y_unit))
-             text)
+             (Ui.mm fold))
       I.void t.y_folds
   in
   feuille ~w:fw ~h:fh () ++ labels_x ++ labels_y |> I.rot (Float.pi /. 4.)
@@ -73,7 +71,7 @@ let ui { Params.Corolles.w; l; h; with_flap } =
   in
   let paper_size_txt =
     let$ t = t in
-    El.txt' (Printf.sprintf "%dmm x %dmm" t.paper_w t.paper_h)
+    El.txt' (Printf.sprintf "%d x %d" t.paper_w t.paper_h)
   in
   let inputs =
     [

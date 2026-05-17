@@ -112,7 +112,7 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
   in
   let paper_size_txt =
     let$ { paper_size = w, h; _ } = t in
-    El.txt' (Printf.sprintf "%dmm x %dmm" w h)
+    El.txt' (Printf.sprintf "%d x %d" w h)
   in
   let input_rows =
     [

@@ -3,8 +3,13 @@ open Brr_canvas
 open Brr_lwd
 open Lwd_infix
 
+let drop_suffix ~suffix s =
+  if String.ends_with ~suffix s then
+    String.sub s 0 (String.length s - String.length suffix)
+  else s
+
 let txtf fmt = Printf.ksprintf El.txt' fmt
-let mm f = string_of_int Float.(to_int (round f)) ^ "mm"
+let mm f = drop_suffix ~suffix:".0" (Printf.sprintf "%.1f" f)
 
 let float_input' set init =
   let on_input ev =

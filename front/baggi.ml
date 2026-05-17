@@ -21,10 +21,10 @@ let ui { Params.Baggi.w; l } =
       ("Box length", Ui.float_input box_l);
       ( "Box height",
         let$ w = Lwd.get box_w in
-        El.txt' (Printf.sprintf "%.0fmm" w) );
+        El.txt' (Ui.mm w) );
       ( "Paper size",
         let$ pw, ph = paper_size box_w box_l in
-        El.txt' (Printf.sprintf "%dmm x %dmm" pw ph) );
+        El.txt' (Printf.sprintf "%d x %d" pw ph) );
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in

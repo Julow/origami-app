@@ -16,14 +16,14 @@ let ui { Params.Masu.w } =
       ("Box width", Ui.float_input box_w);
       ( "Box length",
         let$ w = Lwd.get box_w in
-        El.txt' (Printf.sprintf "%.0fmm" w) );
+        El.txt' (Ui.mm w) );
       ( "Box height",
         let$ w = Lwd.get box_w in
-        El.txt' (Printf.sprintf "%.0fmm" (w /. 2.)) );
+        El.txt' (Ui.mm (w /. 2.)) );
       ( "Paper size",
         let$ w = Lwd.get box_w in
         let p = paper_width w in
-        El.txt' (Printf.sprintf "%.0fmm x %.0fmm" p p) );
+        El.txt' (Ui.mm p ^ " x " ^ Ui.mm p) );
     ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
