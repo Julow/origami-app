@@ -13,14 +13,14 @@ let ui { Params.Masu.w } =
   in
   let inputs =
     [
-      ("Box width", Ui.float_input box_w);
-      ( "Box length",
+      ([%i18n box_width], Ui.float_input box_w);
+      ( [%i18n box_length],
         let$ w = Lwd.get box_w in
         El.txt' (Ui.mm w) );
-      ( "Box height",
+      ( [%i18n box_height],
         let$ w = Lwd.get box_w in
         El.txt' (Ui.mm (w /. 2.)) );
-      ( "Paper size",
+      ( [%i18n paper_size],
         let$ w = Lwd.get box_w in
         let p = paper_width w in
         El.txt' (Ui.mm p ^ " x " ^ Ui.mm p) );

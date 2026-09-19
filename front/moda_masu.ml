@@ -94,14 +94,14 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
   let t = Lwd.map ~f:compute params in
   let input_rows =
     [
-      `R (Ui.input_row "Box width" (Ui.float_input box_w));
-      `R (Ui.input_row "Box length" (Ui.float_input box_l));
-      `R (Ui.input_row "Box height" (Ui.float_input box_h));
+      `R (Ui.input_row [%i18n box_width] (Ui.float_input box_w));
+      `R (Ui.input_row [%i18n box_length] (Ui.float_input box_l));
+      `R (Ui.input_row [%i18n box_height] (Ui.float_input box_h));
       `R
-        (Ui.input_row "Paper size"
+        (Ui.input_row [%i18n paper_size]
            (let$ { paper_size = w, h; _ } = t in
             El.txt' (Printf.sprintf "%d x %d" w h)));
-      `R (Ui.input_row "Lid" (Ui.boolean_input lid));
+      `R (Ui.input_row [%i18n moda_lid] (Ui.boolean_input lid));
       `S
         (let$ lid_inputs =
            let lidh_txt =
@@ -110,7 +110,7 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
            in
            seq_lift_list
              [
-               Ui.input_row "Lid margin"
+               Ui.input_row [%i18n moda_lid_margin]
                  (Elwd.div
                     ~at:[ `P (At.class' (Jstr.v "inputs-group")) ]
                     [
@@ -118,7 +118,7 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
                       `P (El.txt' " x ");
                       `R (Ui.float_input lid_margin_l);
                     ]);
-               Ui.input_row "Lid height difference" lidh_txt;
+               Ui.input_row [%i18n moda_lid_h_diff] lidh_txt;
              ]
          and$ { lid; _ } = params in
          if lid then lid_inputs else Lwd_seq.empty);

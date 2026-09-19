@@ -47,7 +47,7 @@ let ui state =
            [
              El.a
                ~at:[ At.href (Jstr.v "https://github.com/Julow/origami-app") ]
-               [ El.txt' "Source code" ];
+               [ El.txt' [%i18n source_code] ];
            ]);
     ]
 
@@ -61,7 +61,17 @@ let url state =
   in
   on_params_change (Url_utils.start ~on_change:on_params_change fragment)
 
+let init_lang () =
+  let set lang =
+    try
+      I18n.set_language (I18n.guess_language_of_string (Jstr.to_string lang));
+      true
+    with I18n.Unknown_language _ -> false
+  in
+  ignore @@ List.exists set (Navigator.languages G.navigator)
+
 let () =
+  init_lang ();
   let state = Lwd.var (apply_params (snd (List.hd models))) in
   url state;
   Brr_lwd_utils.start (ui state)

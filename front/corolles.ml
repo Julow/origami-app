@@ -75,11 +75,11 @@ let ui { Params.Corolles.w; l; h; with_flap } =
   in
   let inputs =
     [
-      ("Box width", Ui.float_input box_w);
-      ("Box length", Ui.float_input box_l);
-      ("Box height", Ui.float_input box_h);
-      ("With flap", Ui.boolean_input with_flap);
-      ("Paper size", paper_size_txt);
+      ([%i18n box_width], Ui.float_input box_w);
+      ([%i18n box_length], Ui.float_input box_l);
+      ([%i18n box_height], Ui.float_input box_h);
+      ([%i18n corolles_with_flap], Ui.boolean_input with_flap);
+      ([%i18n paper_size], paper_size_txt);
     ]
   in
   let ui =

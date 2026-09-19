@@ -1,7 +1,9 @@
 (executable
  (name app)
  (modes js)
- (libraries brr brr-lwd lwd vg vg.htmlc gg))
+ (libraries brr brr-lwd lwd vg vg.htmlc gg i18n)
+ (preprocess
+  (pps ocsigen-i18n -- --default-module I18n)))
 
 (rule
  (copy app.bc.js app.js))

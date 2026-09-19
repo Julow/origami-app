@@ -97,12 +97,13 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
       in
       [ `R (button_col ~at:[ `R hidden ] "×" (remove_compartment row)) ]
     in
-    Lwd_seq.element (Ui.input_row "Compartment" ~extra_cols (Ui.float_input v))
+    Lwd_seq.element
+      (Ui.input_row [%i18n katta_compartment] ~extra_cols (Ui.float_input v))
   in
   let comp_add_row =
     let count =
       let$ compartment_count in
-      Ui.txtf "%d compartments" compartment_count
+      El.txt' [%i18n katta_compartment_c ~n:compartment_count]
     in
     Elwd.tr
       [
@@ -116,13 +117,13 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
   in
   let input_rows =
     [
-      `R (Ui.input_row "Box width" (Ui.float_input box_w));
-      `R (Ui.input_row "Box height" (Ui.float_input box_h));
+      `R (Ui.input_row [%i18n box_width] (Ui.float_input box_w));
+      `R (Ui.input_row [%i18n box_height] (Ui.float_input box_h));
       `R comp_add_row;
       `S
         (Lwd_seq.lift
            (Lwd_table.map_reduce compartment_row Lwd_seq.monoid compartments));
-      `R (Ui.input_row "Paper size" paper_size_txt);
+      `R (Ui.input_row [%i18n paper_size] paper_size_txt);
     ]
   in
   let ui =

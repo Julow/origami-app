@@ -17,12 +17,12 @@ let ui { Params.Baggi.w; l } =
   in
   let inputs =
     [
-      ("Box width", Ui.float_input box_w);
-      ("Box length", Ui.float_input box_l);
-      ( "Box height",
+      ([%i18n box_width], Ui.float_input box_w);
+      ([%i18n box_length], Ui.float_input box_l);
+      ( [%i18n box_height],
         let$ w = Lwd.get box_w in
         El.txt' (Ui.mm w) );
-      ( "Paper size",
+      ( [%i18n paper_size],
         let$ pw, ph = paper_size box_w box_l in
         El.txt' (Printf.sprintf "%d x %d" pw ph) );
     ]

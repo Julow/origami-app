@@ -67,7 +67,7 @@ let resources_ui rs =
   `P
     (El.div
        ~at:[ At.class' (Jstr.v "borders") ]
-       (El.h3 [ El.txt' "Resources" ]
+       (El.h3 [ El.txt' [%i18n resources] ]
        :: List.map
             (fun (title, author, link) ->
               El.a

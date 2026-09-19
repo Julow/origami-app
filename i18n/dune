@@ -1,0 +1,14 @@
+(library
+ (name i18n))
+
+(rule
+ (target i18n.ml)
+ (action
+  (run
+   ocsigen-i18n
+   --languages
+   en,fr
+   --input-file
+   %{dep:i18n.tsv}
+   --output-file
+   %{target})))
