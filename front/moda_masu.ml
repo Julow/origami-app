@@ -98,9 +98,9 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
       `R (Ui.input_row [%i18n box_length] (Ui.float_input box_l));
       `R (Ui.input_row [%i18n box_height] (Ui.float_input box_h));
       `R
-        (Ui.input_row [%i18n paper_size]
+        (Ui.paper_size
            (let$ { paper_size = w, h; _ } = t in
-            El.txt' (Printf.sprintf "%d x %d" w h)));
+            (w, h)));
       `R (Ui.input_row [%i18n moda_lid] (Ui.boolean_input lid));
       `S
         (let$ lid_inputs =

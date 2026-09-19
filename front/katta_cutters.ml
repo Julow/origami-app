@@ -111,9 +111,9 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
         `R (button_col "+" add_compartment);
       ]
   in
-  let paper_size_txt =
+  let paper_size =
     let$ { paper_size = w, h; _ } = t in
-    El.txt' (Printf.sprintf "%d x %d" w h)
+    (w, h)
   in
   let input_rows =
     [
@@ -123,7 +123,7 @@ let ui { Params.Katta_cutters.w; h; compartments = comps } =
       `S
         (Lwd_seq.lift
            (Lwd_table.map_reduce compartment_row Lwd_seq.monoid compartments));
-      `R (Ui.input_row [%i18n paper_size] paper_size_txt);
+      `R (Ui.paper_size paper_size);
     ]
   in
   let ui =

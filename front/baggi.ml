@@ -22,13 +22,11 @@ let ui { Params.Baggi.w; l } =
       ( [%i18n box_height],
         let$ w = Lwd.get box_w in
         El.txt' (Ui.mm w) );
-      ( [%i18n paper_size],
-        let$ pw, ph = paper_size box_w box_l in
-        El.txt' (Printf.sprintf "%d x %d" pw ph) );
     ]
   in
+  let input_rows = [ `R (Ui.paper_size (paper_size box_w box_l)) ] in
   let image ~measure_text:_ = Lwd.pure I.void in
-  ( Ui.box_ui title ~inputs ~image
+  ( Ui.box_ui title ~inputs ~input_rows ~image
       ~resources:
         [
           ( "Tuto 1 : Les boîtes baggi",

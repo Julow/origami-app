@@ -1,4 +1,3 @@
-open Brr
 open Vg
 open Lwd_infix
 open Draw_utils
@@ -69,21 +68,19 @@ let ui { Params.Corolles.w; l; h; with_flap } =
       paper_h = int_of_float (l +. (h *. 2.) +. if with_flap then h else 0.);
     }
   in
-  let paper_size_txt =
-    let$ t = t in
-    El.txt' (Printf.sprintf "%d x %d" t.paper_w t.paper_h)
-  in
   let inputs =
     [
       ([%i18n box_width], Ui.float_input box_w);
       ([%i18n box_length], Ui.float_input box_l);
       ([%i18n box_height], Ui.float_input box_h);
       ([%i18n corolles_with_flap], Ui.boolean_input with_flap);
-      ([%i18n paper_size], paper_size_txt);
     ]
   in
+  let input_rows =
+    [ `R (Ui.paper_size (Lwd.map ~f:(fun t -> (t.paper_w, t.paper_h)) t)) ]
+  in
   let ui =
-    Ui.box_ui title ~inputs ~image:(image t)
+    Ui.box_ui title ~inputs ~input_rows ~image:(image t)
       ~resources:
         [
           ( "Tuto Origami 12 : Les boîtes corolles",

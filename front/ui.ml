@@ -63,6 +63,13 @@ let input_row ?(extra_cols = []) label input =
   Elwd.tr
     (`P (El.td [ El.txt' label ]) :: `R (Elwd.td [ `R input ]) :: extra_cols)
 
+let paper_size wh =
+  let txt =
+    let$ w, h = wh in
+    El.txt' (Printf.sprintf "%s %d x %d" [%i18n paper_size] w h)
+  in
+  Elwd.tr [ `R (Elwd.td ~at:[ `P (At.int (Jstr.v "colspan") 2) ] [ `R txt ]) ]
+
 let resources_ui rs =
   `P
     (El.div
@@ -103,8 +110,11 @@ let box_ui' title ~input_rows ~image ~resources =
   ]
   @ resources
 
-let box_ui title ~inputs ~image ~resources =
+let box_ui ?(input_rows = []) title ~inputs ~image ~resources =
   let input_rows =
-    List.map (fun (label, input) -> `R (input_row label input)) inputs
+    let inputs =
+      List.rev_map (fun (label, input) -> `R (input_row label input)) inputs
+    in
+    List.rev_append inputs input_rows
   in
   box_ui' title ~input_rows ~image ~resources

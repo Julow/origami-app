@@ -3,7 +3,10 @@ open Vg
 open Lwd_infix
 
 let title = "Masu"
-let paper_width box_w = box_w /. 0.3536
+
+let paper_width box_w =
+  let w = int_of_float (Float.round (box_w /. 0.3536)) in
+  (w, w)
 
 let ui { Params.Masu.w } =
   let box_w = Lwd.var w in
@@ -20,15 +23,14 @@ let ui { Params.Masu.w } =
       ( [%i18n box_height],
         let$ w = Lwd.get box_w in
         El.txt' (Ui.mm (w /. 2.)) );
-      ( [%i18n paper_size],
-        let$ w = Lwd.get box_w in
-        let p = paper_width w in
-        El.txt' (Ui.mm p ^ " x " ^ Ui.mm p) );
     ]
+  in
+  let input_rows =
+    [ `R (Ui.paper_size (Lwd.map ~f:paper_width (Lwd.get box_w))) ]
   in
   let image ~measure_text:_ = Lwd.pure I.void in
   let ui =
-    Ui.box_ui title ~inputs ~image
+    Ui.box_ui title ~inputs ~input_rows ~image
       ~resources:
         [
           ( "Tuto 2 : Les boîtes Masu",
