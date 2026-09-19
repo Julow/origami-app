@@ -42,7 +42,7 @@ a:hover
 .content
 {
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 750px;
   text-align: center;
 }
 
@@ -81,15 +81,13 @@ footer
 
 .inputs
 {
-  width: 100%;
+  width: 350px;
   table-layout: fixed;
   padding: 1em;
 }
 
-.inputs td
-{
-  width: 50%;
-}
+.inputs td:first-child { width: 75%; }
+.inputs td:last-child { width: 25%; }
 
 .inputs input
 {
