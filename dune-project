@@ -9,4 +9,4 @@
 (package
  (name origami-app)
  (synopsis "Paper size calculator for origami boxes")
- (depends ocaml brr brr-lwd lwd vg gg js_of_ocaml))
+ (depends ocaml brr brr-lwd lwd vg gg js_of_ocaml ocsigen-i18n))

@@ -11,6 +11,7 @@ depends: [
   "vg"
   "gg"
   "js_of_ocaml"
+  "ocsigen-i18n"
   "odoc" {with-doc}
 ]
 build: [
