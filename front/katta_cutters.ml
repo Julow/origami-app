@@ -24,14 +24,14 @@ let image t ~measure_text =
       (fun acc fold ->
         let x = fx +. ((pw -. fold) *. x_unit) in
         let rot_line = Float.pi /. -2. in
-        acc ++ label_left ~measure_text ~rot_line ~rot_text x ~-.fy (Ui.mm fold))
+        acc ++ label_left ~measure_text ~rot_line ~rot_text x ~-.fy (Ui.cm fold))
       I.void t.x_folds
   in
   let labels_y =
     List.fold_left
       (fun acc fold ->
         let y = fy +. ((ph -. fold) *. y_unit) in
-        acc ++ label_right ~rot_text ~-.fx y (Ui.mm fold))
+        acc ++ label_right ~rot_text ~-.fx y (Ui.cm fold))
       I.void t.y_folds
   in
   feuille ~w:fw ~h:fh () ++ labels_x ++ labels_y |> I.rot (Float.pi /. 4.)

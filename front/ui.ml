@@ -8,8 +8,10 @@ let drop_suffix ~suffix s =
     String.sub s 0 (String.length s - String.length suffix)
   else s
 
-let txtf fmt = Printf.ksprintf El.txt' fmt
 let mm f = drop_suffix ~suffix:".0" (Printf.sprintf "%.1f" f)
+
+(** Convert [f] (in millimeter) to centimeter string. *)
+let cm f = drop_suffix ~suffix:".0" (Printf.sprintf "%.1f" (f /. 10.))
 
 let float_input' set init =
   let on_input ev =

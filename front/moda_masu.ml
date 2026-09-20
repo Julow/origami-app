@@ -29,7 +29,7 @@ let image t ~measure_text =
   let label_x ?(below = false) x =
     (* Display a distance from an edge of the diagonal instead of a distance
        from the center point. *)
-    let txt = Ui.mm ((diag_len /. 2.) +. x) in
+    let txt = Ui.cm ((diag_len /. 2.) +. x) in
     let x = x *. labels_unit in
     (text_centered ~measure_text txt
     |> I.move (V2.v x (if below then ~-.2. -. font_size else 2.)))
@@ -37,12 +37,12 @@ let image t ~measure_text =
   in
   let label_y y =
     (* Invert the scale for aesthetic purposes. *)
-    let text = Ui.mm (diag_len -. ((diag_len /. 2.) +. y)) in
+    let text = Ui.cm (diag_len -. ((diag_len /. 2.) +. y)) in
     let y = y *. labels_unit in
     label_right 0. y text
   in
   let label_c =
-    let text = Ui.mm (diag_len /. 2.) in
+    let text = Ui.cm (diag_len /. 2.) in
     (text_left ~measure_text text
     |> I.move (V2.v ~-.2. (font.Font.size /. ~-.3.)))
     ++ rect_mid (P2.v 0. 0.) (Size2.v 2. 0.3) Color.black
@@ -61,8 +61,6 @@ let image t ~measure_text =
   (feuille () ++ diag (Float.pi /. 4.) 0.3 ++ diag ~-.(Float.pi /. 4.) 0.3
   |> I.rot (Float.pi /. 4.))
   ++ labels_x ++ labels_y ++ label_c
-
-let lid_padding = (2., 4.)
 
 let compute { w; l; h; lid; lid_margin_w; lid_margin_l } =
   let lidh = (lid_margin_w +. lid_margin_l) /. 4. in

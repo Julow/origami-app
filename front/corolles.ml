@@ -26,7 +26,7 @@ let image t ~measure_text =
         ++ label_left ~measure_text ~rot_line:(Float.pi /. -2.)
              ~rot_text:(Float.pi /. -4.)
              (fx +. (fold *. x_unit))
-             ~-.fy (Ui.mm fold))
+             ~-.fy (Ui.cm fold))
       I.void t.x_folds
   in
   let labels_y =
@@ -35,7 +35,7 @@ let image t ~measure_text =
         acc
         ++ label_right ~rot_text:(Float.pi /. -4.) ~-.fx
              (fy +. (fold *. y_unit))
-             (Ui.mm fold))
+             (Ui.cm fold))
       I.void t.y_folds
   in
   feuille ~w:fw ~h:fh () ++ labels_x ++ labels_y |> I.rot (Float.pi /. 4.)
