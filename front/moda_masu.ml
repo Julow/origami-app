@@ -90,36 +90,30 @@ let ui { w; l; h; lid; lid_margin_w; lid_margin_l } =
     { w; l; h; lid; lid_margin_w; lid_margin_l }
   in
   let t = Lwd.map ~f:compute params in
+  let lid_hidden =
+    `R
+      (Lwd.map params ~f:(fun p ->
+           if p.lid then At.void else At.style (Jstr.v "visibility: hidden;")))
+  in
   let input_rows =
     [
       `R (Ui.input_row [%i18n box_width] (Ui.float_input box_w));
       `R (Ui.input_row [%i18n box_length] (Ui.float_input box_l));
       `R (Ui.input_row [%i18n box_height] (Ui.float_input box_h));
-      `R
-        (Ui.paper_size
-           (let$ { paper_size = w, h; _ } = t in
-            (w, h)));
+      `R (Ui.paper_size (Lwd.map t ~f:(fun t -> t.paper_size)));
       `R (Ui.input_row [%i18n moda_lid] (Ui.boolean_input lid));
-      `S
-        (let$ lid_inputs =
-           let lidh_txt =
-             let$ { lidh; _ } = t in
-             El.txt' (Ui.mm lidh)
-           in
-           seq_lift_list
-             [
-               Ui.input_row [%i18n moda_lid_margin]
-                 (Elwd.div
-                    ~at:[ `P (At.class' (Jstr.v "inputs-group")) ]
-                    [
-                      `R (Ui.float_input lid_margin_w);
-                      `P (El.txt' " x ");
-                      `R (Ui.float_input lid_margin_l);
-                    ]);
-               Ui.input_row [%i18n moda_lid_h_diff] lidh_txt;
-             ]
-         and$ { lid; _ } = params in
-         if lid then lid_inputs else Lwd_seq.empty);
+      `R
+        (Ui.input_row ~at:[ lid_hidden ] [%i18n moda_lid_margin]
+           (Elwd.div
+              ~at:[ `P (At.class' (Jstr.v "inputs-group")) ]
+              [
+                `R (Ui.float_input lid_margin_w);
+                `P (El.txt' " x ");
+                `R (Ui.float_input lid_margin_l);
+              ]));
+      `R
+        (Ui.input_row ~at:[ lid_hidden ] [%i18n moda_lid_h_diff]
+           (Lwd.map t ~f:(fun t -> El.txt' (Ui.mm t.lidh))));
     ]
   in
   let ui =

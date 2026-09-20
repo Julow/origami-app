@@ -61,8 +61,8 @@ let canvas_elwd image =
   else Vgr_utils.render vgr image;
   el
 
-let input_row ?(extra_cols = []) label input =
-  Elwd.tr
+let input_row ?at ?(extra_cols = []) label input =
+  Elwd.tr ?at
     (`P (El.td [ El.txt' label ]) :: `R (Elwd.td [ `R input ]) :: extra_cols)
 
 let paper_size wh =
